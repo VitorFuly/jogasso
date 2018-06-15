@@ -7,7 +7,9 @@
 #define STATUS_STATE_GAME 1	
 #define STATUS_STATE_GAMEOVER 2
 
-
+typedef struct {
+	float x, y;
+} Paisagem;
 typedef struct {
 
 	float x, y;
@@ -23,6 +25,8 @@ typedef struct {
 }
 Piso;
 typedef struct {
+	//fundo
+	Paisagem paisagem;
 	//players
 	Man man;
 	//enfeite
@@ -30,8 +34,9 @@ typedef struct {
 
 
 	//imagens
+	SDL_Texture *paisa;
 	SDL_Texture *Boneco[2];
-	SDL_Texture *Chao[100];
+	SDL_Texture *Chao;
 	SDL_Texture *Star;
 	SDL_Texture *label;
 	int labelw, labelh;
