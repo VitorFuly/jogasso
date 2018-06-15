@@ -5,7 +5,7 @@
 #include  "satus.h"
 #include <time.h>
 #include "SDL_image.h"
-#define	GRAVIDADE 0.20f
+#define	GRAVIDADE 0.2f
 
 
 
@@ -15,72 +15,85 @@ void LoadGame(GameState *game) {
 
 
 	SDL_Surface *surface = NULL;
-	
 
-		//boneco
-		surface = IMG_Load("personagem.png");
-		if (surface == NULL) {
-			printf("Nao foi possivel achar boneco.png");
-			SDL_Quit();
-			exit(1);
-		}
-		game->Boneco[0] = SDL_CreateTextureFromSurface(game->renderer, surface);
-		SDL_FreeSurface(surface);
-		// boneco 2
-		surface = IMG_Load("boneco2.png");
-		if (surface == NULL) {
-			printf("Nao foi possivel achar boneco.png");
-			SDL_Quit();
-			exit(1);
-		}
-		game->Boneco[1] = SDL_CreateTextureFromSurface(game->renderer, surface);
-		SDL_FreeSurface(surface);
-		//piso
-		surface = IMG_Load("piso.png");
-		if (surface == NULL) {
-			printf("Nao foi possivel achar piso.png");
-			SDL_Quit();
-			exit(1);
-		}
-		game->Chao[0] = SDL_CreateTextureFromSurface(game->renderer, surface);
-		SDL_FreeSurface(surface);
-		//iniciando o tempo
-		game->tempo = 0;
-
-		//iniciando a fonte
-		game->fonte = TTF_OpenFont("crazy.ttf", 35);
-		if (!game->fonte) {
-			printf("n foi possivel encontrar a fonte \n");
-			exit(1);
-		}
-
-		game->label = NULL;
-
-
-		// iniciando personagem
-		game->man.x = 50;
-		game->man.y = 200;
-		game->man.dx = 0;
-		game->man.dy = 0;
-		game->man.noChao = 0;
-		game->man.mov = 0;
-		game->man.aoContrario = 0;
-		game->man.dimi = 0;
-		game->man.vidas = 3;
-		game->statusState = STATUS_STATE_VIDAS;
-
-
-		init_status_vidas(game);
-
-		//init piso
-		for (int i = 0; i < 5; i++) {
-			game->piso[i].h = 90;
-			game->piso[i].w = 160;
-			game->piso[i].x = i * 160;
-			game->piso[i].y = 350;
-		}
-
+	surface = IMG_Load("paisagem.png");
+	if (surface == NULL) {
+		printf("Nao foi possivel achar paisagem.png");
+		SDL_Quit();
+		exit(1);
 	}
+	game->paisa = SDL_CreateTextureFromSurface(game->renderer, surface);
+	SDL_FreeSurface(surface);
+
+	//boneco
+	surface = IMG_Load("personagem.png");
+	if (surface == NULL) {
+		printf("Nao foi possivel achar boneco.png");
+		SDL_Quit();
+		exit(1);
+	}
+	game->Boneco[0] = SDL_CreateTextureFromSurface(game->renderer, surface);
+	SDL_FreeSurface(surface);
+	// boneco 2
+	surface = IMG_Load("boneco2.png");
+	if (surface == NULL) {
+		printf("Nao foi possivel achar boneco.png");
+		SDL_Quit();
+		exit(1);
+	}
+	game->Boneco[1] = SDL_CreateTextureFromSurface(game->renderer, surface);
+	SDL_FreeSurface(surface);
+	//piso
+	surface = IMG_Load("piso.png");
+	if (surface == NULL) {
+		printf("Nao foi possivel achar piso.png");
+		SDL_Quit();
+		exit(1);
+	}
+	game->Chao = SDL_CreateTextureFromSurface(game->renderer, surface);
+	SDL_FreeSurface(surface);
+	//iniciando o tempo
+	game->tempo = 0;
+
+	//iniciando a fonte
+	game->fonte = TTF_OpenFont("crazy.ttf", 35);
+	if (!game->fonte) {
+		printf("n foi possivel encontrar a fonte \n");
+		exit(1);
+	}
+
+	game->label = NULL;
+
+
+	// iniciando personagem
+	game->man.x = 20;
+	game->man.y = 200;
+	game->man.dx = 0;
+	game->man.dy = 0;
+	game->man.noChao = 0;
+	game->man.mov = 0;
+	game->man.aoContrario = 0;
+	game->man.dimi = 0;
+	game->man.vidas = 3;
+	game->statusState = STATUS_STATE_VIDAS;
+
+
+	init_status_vidas(game);
+
+	//init piso
+	for (int i = 0; i < 5; i++) {
+		game->piso[i].h = 95;
+		game->piso[i].w = 160;
+		game->piso[i].x = i * 160.0;
+		game->piso[i].y = 355;
+	}
+		game->piso[5].h = 70;
+		game->piso[5].w = 160;
+		game->piso[5].x =100;
+		game->piso[5].y = 200;
+	}
+
+
 
 void process(GameState *game) {
 
@@ -90,8 +103,8 @@ void process(GameState *game) {
 	if (game->tempo > 500) {
 		shutdown_status_vidas(game);
 		game->statusState = STATUS_STATE_GAME;
-	}	
-	if (game->statusState == STATUS_STATE_GAME) 
+	}
+	if (game->statusState == STATUS_STATE_GAME)
 	{
 
 		//movimentação do personagem
@@ -100,20 +113,20 @@ void process(GameState *game) {
 		man->y += man->dy;
 
 		if (man->dx != 0 && man->noChao && !man->dimi) {
-			if (game->tempo % 20 == 0) {
+			if (game->tempo % 8 == 0) {
 				if (man->mov == 0) {
 					man->mov = 1;
 				}
 				else {
-					man->mov = 1;
+					man->mov = 0;
 				}
 			}
 
 		}
 
 
-		man->dy += GRAVIDADE;
-		
+		man->dy += GRAVIDADE * 1.1;
+
 	}
 
 
@@ -122,9 +135,9 @@ void colisaoDetect(GameState *game) {
 
 	// checar colisao com algum piso
 	for (int i = 0; i < 100; i++) {
-		float mw = 48, mh = 48;
+		float mw = 53, mh = 52;
 		float mx = game->man.x, my = game->man.y;
-		float bx = game->piso[i].x, by = game->piso[i].y, bw = game->piso[i].w, bh = game->piso[i].h;
+		float bx = game->piso[i].x-3, by = game->piso[i].y, bw = game->piso[i].w-3, bh = game->piso[i].h;
 
 		if (mx + mh / 2 > bx && mx + mw / 2 < bx + bw) {
 			//esta batendo em cima?
@@ -173,27 +186,27 @@ void colisaoDetect(GameState *game) {
 			}
 		}
 	}
-	
+
 }
 
 int processEvents(SDL_Window *window, GameState *game) {
 	SDL_Event event;
 	int done = 0;
 
-	while (SDL_PollEvent(&event)) 
+	while (SDL_PollEvent(&event))
 	{
 		switch (event.type) {
-		case SDL_WINDOWEVENT_CLOSE: 
+		case SDL_WINDOWEVENT_CLOSE:
 		{
-			if (window) 
+			if (window)
 			{
 				SDL_DestroyWindow(window);
 				window = NULL;
 				done = 1;
 			}
 		}
-									break;
-		case SDL_KEYDOWN: 
+		break;
+		case SDL_KEYDOWN:
 		{
 			switch (event.key.keysym.sym)
 			{
@@ -204,14 +217,14 @@ int processEvents(SDL_Window *window, GameState *game) {
 			case SDLK_UP:
 				if (game->man.noChao)
 				{
-					game->man.dy = -6;
+					game->man.dy = -7;
 					game->man.noChao = 0;
 
 				}
 				break;
 			}
 		}
-						  break;
+		break;
 
 		case SDL_QUIT:
 			//fecha o jogo
@@ -223,8 +236,8 @@ int processEvents(SDL_Window *window, GameState *game) {
 	const Uint8 *state = SDL_GetKeyboardState(NULL);
 	if (state[SDL_SCANCODE_UP])
 	{
-		game->man.dy -= 0.04f;
-		
+		game->man.dy -= 0.06f;
+
 
 	}
 	//ANDANDO
@@ -278,21 +291,27 @@ void doRender(SDL_Renderer *renderer, GameState *game)
 		// estabelece a cor branca para desenhar
 		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
+		//fundo
+		SDL_Rect paisage = { 0, 0,800,600 };
+		SDL_RenderCopy(renderer, game->paisa, NULL, &paisage);
+
 		//piso
-		for (int i = 0; i < 100; i++)
+		for (int i = 0; i < 7; i++)
 		{
 
-			SDL_Rect pisoRect = { game->piso[i].x, game->piso[i].y,game->piso[i].w, game->piso[i].h };
-			SDL_RenderCopy(renderer, game->Chao[0], NULL, &pisoRect);
+			SDL_Rect pisoRect = { game->piso[i].x*1.0f, game->piso[i].y*1.0f,game->piso[i].w * 1.0f, game->piso[i].h*1.0f};
+			SDL_RenderCopy(renderer, game->Chao, NULL, &pisoRect);
 		}
+		
 
 		// desenha um retangulo no personagem
-		SDL_Rect rect = { game->man.x, game->man.y,70,70 };
+		SDL_Rect rect = { game->man.x, game->man.y,50,50};
 		SDL_RenderCopyEx(renderer, game->Boneco[game->man.mov], NULL, &rect, 0, NULL, (game->man.aoContrario == 1));
 
+	
 
 	}
-	
+
 	// mostra a oq foi desenhado
 	SDL_RenderPresent(renderer);
 }
@@ -305,7 +324,7 @@ int main(int args, char *argsv[])
 	GameState gameState;
 	SDL_Window *window = NULL;
 	SDL_Renderer *renderer = NULL;
-	
+
 
 
 	SDL_Init(SDL_INIT_EVERYTHING);
@@ -345,9 +364,10 @@ int main(int args, char *argsv[])
 
 	}
 	// limpa a memoria
+	SDL_DestroyTexture(gameState.paisa);
 	SDL_DestroyTexture(gameState.Boneco[0]);
 	SDL_DestroyTexture(gameState.Boneco[1]);
-	SDL_DestroyTexture(gameState.Chao[0]);
+	SDL_DestroyTexture(gameState.Chao);
 
 	if (gameState.label != NULL)
 		SDL_DestroyTexture(gameState.label);
