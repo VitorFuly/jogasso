@@ -5,6 +5,7 @@
 #include  "satus.h"
 #include <time.h>
 #include "SDL_image.h"
+#include "SDL_mixer.h"
 #define	GRAVIDADE 0.2f
 
 
@@ -56,14 +57,32 @@ void LoadGame(GameState *game) {
 	game->tempo = 0;
 
 	//iniciando a fonte
-	game->fonte = TTF_OpenFont("crazy.ttf", 35);
+	game->fonte = TTF_OpenFont("octagen.ttf", 105);
 	if (!game->fonte) {
+		printf("n foi possivel encontrar a fonte \n");
+		exit(1);
+	}
+
+	game->fonte2 = TTF_OpenFont("crazy.ttf", 65);
+	if (!game->fonte2) {
+		printf("n foi possivel encontrar a fonte \n");
+		exit(1);
+	}
+	game->fonte3 = TTF_OpenFont("crazy.ttf",37);
+	if (!game->fonte3) {
+		printf("n foi possivel encontrar a fonte \n");
+		exit(1);
+	}
+	game->fonte4 = TTF_OpenFont("heartt.ttf", 50);
+	if (!game->fonte4) {
 		printf("n foi possivel encontrar a fonte \n");
 		exit(1);
 	}
 
 	game->label = NULL;
 
+	//carregar musicas 
+	
 
 	// iniciando personagem
 	game->man.x = 20;
@@ -328,7 +347,7 @@ int main(int args, char *argsv[])
 
 
 	SDL_Init(SDL_INIT_EVERYTHING);
-
+	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 
 	window = SDL_CreateWindow("Arret", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 600, 400, SDL_WINDOW_SHOWN);
 
@@ -341,10 +360,15 @@ int main(int args, char *argsv[])
 
 	LoadGame(&gameState);
 
-
+	Mix_Music *musicafundo;
+	musicafundo = Mix_LoadMUS("awesomeness.wav");
+	if (!musicafundo) {
+		printf("nao foi possivel encontrar a musica \n");
+		exit(20);
+	}
 
 	// Janela aberta: Loop
-
+	Mix_PlayMusic(musicafundo, -1);
 	int done = 0;
 	//Loop
 	while (!done)
@@ -372,11 +396,11 @@ int main(int args, char *argsv[])
 	if (gameState.label != NULL)
 		SDL_DestroyTexture(gameState.label);
 	TTF_CloseFont(gameState.fonte);
-
 	//fecha e destroy a janela
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
-
+	Mix_FreeMusic(musicafundo);
+	Mix_CloseAudio();
 	//Fecha o TTF
 
 	TTF_Quit();
