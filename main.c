@@ -12,8 +12,20 @@
 
 
 void LoadGame(GameState *game) {
-	// carregar imagens
+	//carregar som
 
+	game->menusom = Mix_LoadWAV("menusom.wav");
+	if (!game->menusom) {
+		printf("nao foi possivel encontrar a musica \n");
+		exit(20);
+	}
+	else {
+		Mix_VolumeChunk(game->menusom, 32);
+	}
+
+
+
+	// carregar imagens
 
 	SDL_Surface *surface = NULL;
 
@@ -95,12 +107,12 @@ void LoadGame(GameState *game) {
 	game->man.dimi = 0;
 	game->man.vidas = 3;
 	game->statusState = STATUS_STATE_VIDAS;
-
-
+	game->scrollx = 0;
+	game->sobconti = 0;
 	init_status_vidas(game);
 
 	//init piso
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < 50; i++) {
 		game->piso[i].h = 95;
 		game->piso[i].w = 160;
 		game->piso[i].x = i * 160.0;
@@ -115,7 +127,6 @@ void LoadGame(GameState *game) {
 
 
 void process(GameState *game) {
-
 	//tempo
 	game->tempo++;
 
@@ -142,12 +153,14 @@ void process(GameState *game) {
 			}
 
 		}
-
+	
 
 		man->dy += GRAVIDADE * 1.1;
 
 	}
-
+	game->scrollx = -game->man.x+300;
+	if (game->scrollx > 0)
+		game->scrollx = 0;
 
 }
 void colisaoDetect(GameState *game) {
@@ -211,10 +224,57 @@ void colisaoDetect(GameState *game) {
 int processEvents(SDL_Window *window, GameState *game) {
 	SDL_Event event;
 	int done = 0;
-
+	
+	
 	while (SDL_PollEvent(&event))
 	{
 		switch (event.type) {
+
+		case SDL_MOUSEMOTION:
+		{
+			if (game->tempo < 500 && event.motion.x >= 35 && event.motion.x <= 35 + game->contiw && event.motion.y >= 235 && event.motion.y <= 235 + game->contih) {
+				game->sobconti = 1;
+			}
+			else {
+				game->sobconti = 0;
+
+			}
+			if (game->tempo < 500 && event.motion.x >= 35 && event.motion.x <= 35 + game->novow && event.motion.y >= 270 && event.motion.y <= 270 + game->novoh) {
+				game->sobnovo = 1;
+			}
+			else {
+				game->sobnovo = 0;
+
+			}
+			if (game->tempo < 500 && event.motion.x >= 35 && event.motion.x <= 35 + game->configw && event.motion.y >= 305 && event.motion.y <= 305 + game->configh) {
+				game->sobconfig = 1;
+			}
+			else {
+				game->sobconfig = 0;
+
+			}
+			if (game->tempo < 500 && event.motion.x >= 35 && event.motion.x <= 35 + game->sairw && event.motion.y >= 340 && event.motion.y <= 340 + game->sairh) {
+				game->sobsair = 1;
+			}
+			else {
+				game->sobsair = 0;
+
+			}
+
+			break;
+		}
+		case SDL_MOUSEBUTTONDOWN:
+			if (game->sobconti == 1) {
+				game->tempo = 498;
+				Mix_PlayChannel(-1, game->menusom, 0);
+			}
+		
+			else if (game->sobsair == 1) {
+				Mix_PlayChannel(-1, game->menusom, 0);
+				SDL_Delay(80);
+				done = 1;
+			}
+			break;
 		case SDL_WINDOWEVENT_CLOSE:
 		{
 			if (window)
@@ -225,6 +285,7 @@ int processEvents(SDL_Window *window, GameState *game) {
 			}
 		}
 		break;
+	
 		case SDL_KEYDOWN:
 		{
 			switch (event.key.keysym.sym)
@@ -315,16 +376,16 @@ void doRender(SDL_Renderer *renderer, GameState *game)
 		SDL_RenderCopy(renderer, game->paisa, NULL, &paisage);
 
 		//piso
-		for (int i = 0; i < 7; i++)
+		for (int i = 0; i <50; i++)
 		{
 
-			SDL_Rect pisoRect = { game->piso[i].x*1.0f, game->piso[i].y*1.0f,game->piso[i].w * 1.0f, game->piso[i].h*1.0f};
+			SDL_Rect pisoRect = { game->scrollx+game->piso[i].x*1.0f, game->piso[i].y*1.0f,game->piso[i].w * 1.0f, game->piso[i].h*1.0f};
 			SDL_RenderCopy(renderer, game->Chao, NULL, &pisoRect);
 		}
 		
 
 		// desenha um retangulo no personagem
-		SDL_Rect rect = { game->man.x, game->man.y,50,50};
+		SDL_Rect rect = { game->scrollx + game->man.x, game->man.y,50,50};
 		SDL_RenderCopyEx(renderer, game->Boneco[game->man.mov], NULL, &rect, 0, NULL, (game->man.aoContrario == 1));
 
 	
@@ -373,6 +434,9 @@ int main(int args, char *argsv[])
 	//Loop
 	while (!done)
 	{
+
+
+
 		//checar eventos
 		done = processEvents(window, &gameState);
 
@@ -400,6 +464,7 @@ int main(int args, char *argsv[])
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
 	Mix_FreeMusic(musicafundo);
+	Mix_FreeChunk(gameState.menusom);
 	Mix_CloseAudio();
 	//Fecha o TTF
 
