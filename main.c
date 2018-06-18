@@ -2,7 +2,7 @@
 #include	"SDL.h"
 #include	<stdio.h>
 #include	"main.h"
-#include  "satus.h"
+#include  "status.h"
 #include <time.h>
 #include "SDL_image.h"
 #include "SDL_mixer.h"
@@ -106,10 +106,11 @@ void LoadGame(GameState *game) {
 	game->man.aoContrario = 0;
 	game->man.dimi = 0;
 	game->man.vidas = 3;
-	game->statusState = STATUS_STATE_VIDAS;
+	game->statusState = STATUS_STATE_MENU;
 	game->scrollx = 0;
 	game->sobconti = 0;
-	init_status_vidas(game);
+	init_status_menu(game);
+
 
 	//init piso
 	for (int i = 0; i < 50; i++) {
@@ -128,12 +129,7 @@ void LoadGame(GameState *game) {
 
 void process(GameState *game) {
 	//tempo
-	game->tempo++;
 
-	if (game->tempo > 500) {
-		shutdown_status_vidas(game);
-		game->statusState = STATUS_STATE_GAME;
-	}
 	if (game->statusState == STATUS_STATE_GAME)
 	{
 
@@ -232,32 +228,51 @@ int processEvents(SDL_Window *window, GameState *game) {
 
 		case SDL_MOUSEMOTION:
 		{
-			if (game->tempo < 500 && event.motion.x >= 35 && event.motion.x <= 35 + game->contiw && event.motion.y >= 235 && event.motion.y <= 235 + game->contih) {
-				game->sobconti = 1;
+			//AÇOES NO MENU PRINCIPAL
+			
+			if (game->statusState == STATUS_STATE_MENU && event.motion.x >= 35 && event.motion.x <= 35 + game->contiw && event.motion.y >= 205 && event.motion.y <= 205 + game->contih) {
+				game->sobconti++;
 			}
 			else {
 				game->sobconti = 0;
 
 			}
-			if (game->tempo < 500 && event.motion.x >= 35 && event.motion.x <= 35 + game->novow && event.motion.y >= 270 && event.motion.y <= 270 + game->novoh) {
+			if (game->statusState == STATUS_STATE_MENU && event.motion.x >= 35 && event.motion.x <= 35 + game->novow && event.motion.y >= 240 && event.motion.y <= 240 + game->novoh) {
 				game->sobnovo = 1;
 			}
 			else {
 				game->sobnovo = 0;
 
 			}
-			if (game->tempo < 500 && event.motion.x >= 35 && event.motion.x <= 35 + game->configw && event.motion.y >= 305 && event.motion.y <= 305 + game->configh) {
+			if (game->statusState == STATUS_STATE_MENU && event.motion.x >= 35 && event.motion.x <= 35 + game->configw && event.motion.y >= 275 && event.motion.y <= 275 + game->configh) {
 				game->sobconfig = 1;
 			}
 			else {
 				game->sobconfig = 0;
 
 			}
-			if (game->tempo < 500 && event.motion.x >= 35 && event.motion.x <= 35 + game->sairw && event.motion.y >= 340 && event.motion.y <= 340 + game->sairh) {
+			if (game->statusState == STATUS_STATE_MENU && event.motion.x >= 35 && event.motion.x <= 35 + game->credw && event.motion.y >= 310 && event.motion.y <= 310 + game->credh) {
+				game->sobcredi = 1;
+			}
+			else {
+				game->sobcredi = 0;
+
+			}
+
+			if (game->statusState == STATUS_STATE_MENU && event.motion.x >= 35 && event.motion.x <= 35 + game->sairw && event.motion.y >= 345 && event.motion.y <= 345 + game->sairh) {
 				game->sobsair = 1;
 			}
 			else {
 				game->sobsair = 0;
+
+			}
+			//AÇOES NO MENU DE CREDITOS
+
+			if (game->statusState == STATUS_STATE_CREDITS && event.motion.x >= 80 && event.motion.x <= 80 + game->voltarmenuw && event.motion.y >= 350 && event.motion.y <= 350 + game->voltarmenuh) {
+				game->sobvoltar = 1;
+			}
+			else {
+				game->sobvoltar = 0;
 
 			}
 
@@ -265,15 +280,30 @@ int processEvents(SDL_Window *window, GameState *game) {
 		}
 		case SDL_MOUSEBUTTONDOWN:
 			if (game->sobconti == 1) {
-				game->tempo = 498;
 				Mix_PlayChannel(-1, game->menusom, 0);
+				SDL_Delay(80);
+				game->statusState = STATUS_STATE_GAME;
+				}
+
+
+			if (game->sobcredi == 1) {
+				Mix_PlayChannel(-1, game->menusom, 0);
+				SDL_Delay(80);
+				init_status_cred(game);
+				game->statusState = STATUS_STATE_CREDITS;
 			}
 		
-			else if (game->sobsair == 1) {
+			if (game->sobsair == 1) {
 				Mix_PlayChannel(-1, game->menusom, 0);
 				SDL_Delay(80);
 				done = 1;
 			}
+			if (game->statusState == STATUS_STATE_CREDITS && game->sobvoltar == 1) {
+				Mix_PlayChannel(-1, game->menusom, 0);
+				SDL_Delay(80);
+				game->statusState = STATUS_STATE_MENU;
+			}
+
 			break;
 		case SDL_WINDOWEVENT_CLOSE:
 		{
@@ -356,8 +386,11 @@ int processEvents(SDL_Window *window, GameState *game) {
 
 void doRender(SDL_Renderer *renderer, GameState *game)
 {
-	if (game->statusState == STATUS_STATE_VIDAS) {
-		draw_status_vidas(game);
+	if (game->statusState == STATUS_STATE_MENU) {
+		draw_status_menu(game);
+	}
+	else if (game->statusState == STATUS_STATE_CREDITS) {
+		draw_status_cred(game);
 	}
 	else if (game->statusState == STATUS_STATE_GAME) {
 
@@ -385,7 +418,7 @@ void doRender(SDL_Renderer *renderer, GameState *game)
 		
 
 		// desenha um retangulo no personagem
-		SDL_Rect rect = { game->scrollx + game->man.x, game->man.y,50,50};
+		SDL_Rect rect = { game->scrollx + game->man.x, game->man.y,52,52};
 		SDL_RenderCopyEx(renderer, game->Boneco[game->man.mov], NULL, &rect, 0, NULL, (game->man.aoContrario == 1));
 
 	
@@ -457,8 +490,7 @@ int main(int args, char *argsv[])
 	SDL_DestroyTexture(gameState.Boneco[1]);
 	SDL_DestroyTexture(gameState.Chao);
 
-	if (gameState.label != NULL)
-		SDL_DestroyTexture(gameState.label);
+	
 	TTF_CloseFont(gameState.fonte);
 	//fecha e destroy a janela
 	SDL_DestroyWindow(window);
