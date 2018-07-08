@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include "main.h"
 #include <stdio.h>
@@ -9,7 +10,7 @@
 
 void init_status_menu(GameState *game) {
 
-
+	
 
 	SDL_Surface *menu = NULL;
 	menu = IMG_Load("logo.png");
@@ -44,17 +45,6 @@ void init_status_menu(GameState *game) {
 	game->config = SDL_CreateTextureFromSurface(game->renderer, configi);
 	SDL_FreeSurface(configi);
 
-	SDL_Surface *conti = TTF_RenderText_Solid(game->fonte3, "Continue", black);
-	game->contiw = conti->w;
-	game->contih = conti->h;
-	game->conti = SDL_CreateTextureFromSurface(game->renderer, conti);
-	SDL_FreeSurface(conti);
-
-	SDL_Surface *conti1 = TTF_RenderText_Solid(game->fonte3, "Continue", red);
-	game->contiw = conti1->w;
-	game->contih = conti1->h;
-	game->conti1 = SDL_CreateTextureFromSurface(game->renderer, conti1);
-	SDL_FreeSurface(conti1);
 
 	SDL_Surface *novo1 = TTF_RenderText_Solid(game->fonte3, "Novo", red);
 	game->novow = novo1->w;
@@ -114,72 +104,66 @@ void draw_status_menu(GameState *game) {
 
 	SDL_RenderClear(game->renderer);
 
-	SDL_Rect fundomenuRect = { 0,0,800,600 };
+	SDL_Rect fundomenuRect = { 0,0,1280,700 };
 	SDL_RenderCopy(renderer, game->logomenu, NULL, &fundomenuRect);
 
-	SDL_Rect logoRect = { 176,72,63,63 };
+	SDL_Rect logoRect = { 480,67,100,100 };
 	SDL_RenderCopy(renderer, game->logo, NULL, &logoRect);
 
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-	SDL_Rect textRect = { 250,71,game->labelw,game->labelh };
+	SDL_Rect textRect = { 585,86,game->labelw+10,game->labelh };
 	SDL_RenderCopy(renderer, game->label, NULL, &textRect);
 
-	SDL_Rect contiRect = { 35,205,game->contiw,game->contih };
-	SDL_RenderCopy(renderer, game->conti, NULL, &contiRect);
+	
 
-	SDL_Rect novoRect = { 35,240,game->novow,game->novoh };
+	SDL_Rect novoRect = { 60,350,game->novow+50,game->novoh + 20 };
 	SDL_RenderCopy(renderer, game->novo, NULL, &novoRect);
 
-	SDL_Rect configRect = { 35,275,game->configw,game->configh };
+	SDL_Rect configRect = { 60,430,game->configw + 50,game->configh + 20 };
 	SDL_RenderCopy(renderer, game->config, NULL, &configRect);
 
 
-	SDL_Rect sairRect = { 35,345,game->sairw,game->sairh };
+	SDL_Rect sairRect = { 60,590,game->sairw + 50,game->sairh + 20 };
 	SDL_RenderCopy(renderer, game->sair, NULL, &sairRect);
 
-	SDL_Rect credRect = { 35,310,game->credw,game->credh };
+	SDL_Rect credRect = { 60,510,game->credw + 50,game->credh + 20 };
 	SDL_RenderCopy(renderer, game->cred, NULL, &credRect);
 
 
-	if(game->sobconti == 1) {
+	if(game->sobnovo == 1 || game->sobconfig ==1 || game->sobsair==1 || game->sobcredi==1) {
 		Mix_PlayChannel(-1, game->menusom, 0);
 		
 	}
-	else if (game->sobconti >= 1) {
-		SDL_Rect conti1Rect = { 33,204,game->contiw + 2,game->contih + 2 };
-		SDL_RenderCopy(renderer, game->conti1, NULL, &conti1Rect);
-	}
-	if (game->sobnovo == 1) {
-		SDL_Rect novo1Rect = { 33,242,game->novow + 2,game->novoh + 2 };
+	
+	if (game->sobnovo >= 1) {
+		SDL_Rect novo1Rect = { 59,351,game->novow + 52,game->novoh + 22 };
 		SDL_RenderCopy(renderer, game->novo1, NULL, &novo1Rect);
 
 	}
-	if (game->sobconfig == 1) {
-		SDL_Rect config1Rect = { 33,273,game->configw + 2,game->configh + 2 };
+	if (game->sobconfig >= 1) {
+		SDL_Rect config1Rect = { 59,431,game->configw + 52,game->configh + 22 };
 		SDL_RenderCopy(renderer, game->config1, NULL, &config1Rect);
 
 	}
 
-	if (game->sobsair == 1) {
-		SDL_Rect sair1Rect = { 33,343,game->sairw + 2,game->sairh + 2 };
+	if (game->sobsair >= 1) {
+		SDL_Rect sair1Rect = { 59,591,game->sairw + 52,game->sairh + 22 };
 		SDL_RenderCopy(renderer, game->sair1, NULL, &sair1Rect);
 
 	}
-	if (game->sobcredi == 1) {
-		SDL_Rect menucreditosRect = { 35,308,game->cred1w + 2,game->cred1h + 2 };
+	if (game->sobcredi >= 1) {
+		SDL_Rect menucreditosRect = { 59,511,game->cred1w + 52,game->cred1h + 22 };
 		SDL_RenderCopy(renderer, game->cred1, NULL, &menucreditosRect);
 	}
 
 
 
 }
-
 void shutdown_status_menu(GameState *game) {
 
 			SDL_DestroyTexture(game->logomenu);
 			game->logomenu = NULL;
-			SDL_DestroyTexture(game->conti);
-			game->conti = NULL;
+			
 			SDL_DestroyTexture(game->label);
 			game->label = NULL;
 			SDL_DestroyTexture(game->novo);
@@ -190,10 +174,7 @@ void shutdown_status_menu(GameState *game) {
 			game->sair = NULL;
 			SDL_DestroyTexture(game->logo);
 			game->logo = NULL;
-			SDL_DestroyTexture(game->conti1);
-			game->conti1 = NULL;
-			SDL_DestroyTexture(game->conti);
-			game->conti = NULL;
+			
 			SDL_DestroyTexture(game->novo1);
 			game->novo1 = NULL;
 			SDL_DestroyTexture(game->config1);
@@ -206,6 +187,50 @@ void shutdown_status_menu(GameState *game) {
 			game->cred = NULL;
 	
 	}
+
+
+
+void init_status_game1(GameState *game) {
+
+
+	SDL_Surface *chao1 = NULL;
+	chao1 = IMG_Load("chaomapa1.png");
+	if (chao1 == NULL) {
+		printf("Nao foi possivel achar logo.png");
+		SDL_Quit();
+		exit(1);
+	}
+	game->Chao2 = SDL_CreateTextureFromSurface(game->renderer, chao1);
+
+	SDL_FreeSurface(chao1);
+
+
+
+}
+
+void draw_status_game1(GameState *game) {
+
+	for (int i = 0; i < 20; i++) {
+		game->piso1[i].h = 95;
+		game->piso1[i].w = 160;
+		game->piso1[i].x = i * 160.0;
+		game->piso1[i].y = 650;
+
+	}
+
+	for (int i = 0; i < 75; i++)
+	{
+
+		SDL_Rect piso1Rect = { game->scrollx + game->piso1[i].x*1.0f, game->piso1[i].y*1.0f,game->piso1[i].w * 1.0f, game->piso1[i].h*1.0f };
+		SDL_RenderCopy(game->renderer, game->Chao, NULL, &piso1Rect);
+
+	}
+
+}
+void shutdown_status_game1(GameState *game) {
+
+}
+
 
 
 void init_status_cred(GameState *game) {
@@ -284,7 +309,7 @@ void draw_status_cred(GameState *game) {
 	// FUNDO
 
 	//ESCREVENDO OS TEXTOS EM PRETO
-	SDL_Rect fundomenuRect = {0,0,800,600};
+	SDL_Rect fundomenuRect = {0,0,1280,700};
 	SDL_RenderCopy(renderer, game->logomenu, NULL, &fundomenuRect);
 
 	SDL_Rect creditosRect = { 180,70,game->creditosw,game->creditosh };
@@ -320,15 +345,19 @@ void draw_status_cred(GameState *game) {
 
 
 	//ESCREVENDO OS TEXTOS EM VERMELHO 
+	if (game->sobvoltar ==1) {
+		Mix_PlayChannel(-1, game->menusom, 0);
 
-	if (game->sobvoltar == 1) {
+	}
+
+
+
+	if (game->sobvoltar >= 1) {
 		SDL_Rect voltRect = { 79,349,game->voltarmenuw + 1,game->voltarmenuh + 1 };
 		SDL_RenderCopy(renderer, game->voltarmi1, NULL, &voltRect);
 	}
 
 }
-
-
 void shutdown_status_cred(GameState *game) {
 	SDL_DestroyTexture(game->creditosi);
 	game->creditosi = NULL;
@@ -356,5 +385,109 @@ void shutdown_status_cred(GameState *game) {
 	game->voltarmi1 = NULL;
 	SDL_DestroyTexture(game->logomenu);
 	game->logomenu = NULL;
+
+}
+
+
+void init_status_over(GameState *game) {
+
+
+
+	
+	SDL_Color white = { 255,255,255,255 };
+	SDL_Color red = { 255,0,0,255 };
+	SDL_Color black = { 0,0,0,0 };
+
+	SDL_Surface *voltar=TTF_RenderText_Solid(game->fonte3, "Voltar", white);
+	game->voltargoi = SDL_CreateTextureFromSurface(game->renderer, voltar);
+
+	SDL_Surface *sairr = TTF_RenderText_Solid(game->fonte3, "Sair", white);
+	game->sairgoi = SDL_CreateTextureFromSurface(game->renderer, sairr);
+
+
+	SDL_Surface *voltargo1 = TTF_RenderText_Solid(game->fonte3, "Voltar", red);
+	
+	game->voltargoi1 = SDL_CreateTextureFromSurface(game->renderer, voltargo1);
+	SDL_FreeSurface(voltargo1);
+
+
+	SDL_Surface *sairgo1 = TTF_RenderText_Solid(game->fonte3, "Sair", red);
+
+	game->sairgoi1 = SDL_CreateTextureFromSurface(game->renderer, sairgo1);
+	SDL_FreeSurface(sairgo1);
+
+
+
+
+
+	SDL_Surface *fundo1 = NULL;
+	fundo1 = IMG_Load("gameover.png");
+	if (fundo1 == NULL) {
+		printf("nao foi possivel achar gameover.png");
+		SDL_Quit();
+		exit(88);
+		}
+	game->fundogo = SDL_CreateTextureFromSurface(game->renderer, fundo1);
+	SDL_FreeSurface(fundo1);
+
+	
+	
+
+
+
+
+}
+void draw_status_over(GameState *game) {
+
+	SDL_Renderer *renderer = game->renderer;
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+
+	SDL_RenderClear(game->renderer);
+
+	SDL_Rect fundogoRect = { 0,0,1280,700 };
+	SDL_RenderCopy(game->renderer, game->fundogo, NULL, &fundogoRect);
+
+	SDL_Rect sairgoRect = { 1040,560,100,100 };
+	SDL_RenderCopy(game->renderer, game->sairgoi, NULL, &sairgoRect);
+
+	SDL_Rect voltargoiRect = { 120,560,100,100 };
+	SDL_RenderCopy(game->renderer, game->voltargoi, NULL, &voltargoiRect);
+
+	
+
+	if (game->sobvoltargo >= 1) {
+		SDL_Rect voltRect = { 119,559,101,101 };
+		SDL_RenderCopy(renderer, game->voltargoi1, NULL, &voltRect);
+	}
+
+	if (game->sobsairgo >= 1) {
+		SDL_Rect sairgo1Rect = {1039,559,101,101 };
+		SDL_RenderCopy(renderer, game->sairgoi1, NULL, &sairgo1Rect);
+	}
+
+
+
+
+}
+void shutdown_status_over(GameState *game) {
+	SDL_DestroyTexture(game->fundogo);
+	game->fundogo = NULL;
+
+	SDL_DestroyTexture(game->voltargoi);
+	game->voltargoi = NULL;
+
+	SDL_DestroyTexture(game->sairgoi);
+	game->sairgoi = NULL;
+
+	SDL_DestroyTexture(game->sairgoi1);
+	game->sairgoi1 = NULL;
+
+	SDL_DestroyTexture(game->voltargoi1);
+	game->voltargoi1 = NULL;
+
+
+	
+	
+	
 
 }
