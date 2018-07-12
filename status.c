@@ -226,21 +226,21 @@ void init_status_cred(GameState *game) {
 
 
 	//CREDITOS 
-	SDL_Surface *Creditos = TTF_RenderText_Solid(game->fonte2, "Creditos", red1);
+	SDL_Surface *Creditos = TTF_RenderText_Solid(game->fonte4, "Creditos", red1);
 	game->creditosw = Creditos->w;
 	game->creditosh = Creditos->h;
 	game->creditosi = SDL_CreateTextureFromSurface(game->renderer, Creditos);
 	SDL_FreeSurface(Creditos);
 
 	// DEVS
-	SDL_Surface *devs = TTF_RenderText_Solid(game->fonte3, "Desenvolvedores", white1);
+	SDL_Surface *devs = TTF_RenderText_Solid(game->fonte4, "Desenvolvedores", white1);
 	game->devsw = devs->w;
 	game->devsh = devs->h;
 	game->devsi = SDL_CreateTextureFromSurface(game->renderer, devs);
 	SDL_FreeSurface(devs);
 
 	//GUILHERME
-	SDL_Surface *guii = TTF_RenderText_Solid(game->fonte3, "Guilherme Lobo", black1);
+	SDL_Surface *guii = TTF_RenderText_Solid(game->fonte4, "Guilherme Lobo", black1);
 	game->guilhermew = guii->w;
 	game->guilhermeh = guii->h;
 	game->guilhermei = SDL_CreateTextureFromSurface(game->renderer, guii);
@@ -248,7 +248,7 @@ void init_status_cred(GameState *game) {
 
 
 	//RICARDO
-	SDL_Surface *ricardo = TTF_RenderText_Solid(game->fonte3, "Ricardo Bianchi", black1);
+	SDL_Surface *ricardo = TTF_RenderText_Solid(game->fonte4, "Ricardo Bianchi", black1);
 	game->ricardow = ricardo->w;
 	game->ricardoh = ricardo->h;
 	game->ricardoi = SDL_CreateTextureFromSurface(game->renderer, ricardo);
@@ -257,7 +257,7 @@ void init_status_cred(GameState *game) {
 
 
 	//VITOR
-	SDL_Surface *vitor = TTF_RenderText_Solid(game->fonte3, "Vitor Fuly", black1);
+	SDL_Surface *vitor = TTF_RenderText_Solid(game->fonte4, "Vitor Fuly", black1);
 	game->vitorw = vitor->w;
 	game->vitorh = vitor->h;
 	game->vitori = SDL_CreateTextureFromSurface(game->renderer, vitor);
@@ -266,13 +266,13 @@ void init_status_cred(GameState *game) {
 
 
 	//VOLTAR
-	SDL_Surface *voltarmenu = TTF_RenderText_Solid(game->fonte3, "Voltar", black1);
+	SDL_Surface *voltarmenu = TTF_RenderText_Solid(game->fonte4, "Voltar", black1);
 	game->voltarmenuw = voltarmenu->w;
 	game->voltarmenuh = voltarmenu->h;
 	game->voltarmi = SDL_CreateTextureFromSurface(game->renderer, voltarmenu);
 	SDL_FreeSurface(voltarmenu);
 
-	SDL_Surface *voltarmenu1 = TTF_RenderText_Solid(game->fonte3, "Voltar", red1);
+	SDL_Surface *voltarmenu1 = TTF_RenderText_Solid(game->fonte4, "Voltar", red1);
 	game->voltarmenuw = voltarmenu->w;
 	game->voltarmenuh = voltarmenu->h;
 	game->voltarmi1 = SDL_CreateTextureFromSurface(game->renderer, voltarmenu1);
@@ -295,22 +295,22 @@ void draw_status_cred(GameState *game) {
 	SDL_Rect fundomenuRect = {0,0,1280,700};
 	SDL_RenderCopy(renderer, game->logomenu, NULL, &fundomenuRect);
 
-	SDL_Rect creditosRect = { 180,70,game->creditosw,game->creditosh };
+	SDL_Rect creditosRect = { 600,80,game->creditosw,game->creditosh };
 	SDL_RenderCopy(renderer, game->creditosi, NULL, &creditosRect);
 
-	SDL_Rect voltRect = { 80,350,game->voltarmenuw,game->voltarmenuh };
+	SDL_Rect voltRect = { 40,630,game->voltarmenuw,game->voltarmenuh };
 	SDL_RenderCopy(renderer, game->voltarmi, NULL, &voltRect);
 
-	SDL_Rect devsRect = { 80,150,game->devsw,game->devsh };
+	SDL_Rect devsRect = { 500,190,game->devsw,game->devsh };
 	SDL_RenderCopy(renderer, game->devsi, NULL, &devsRect);
 
-	SDL_Rect guiRect = { 80,200,game->guilhermew,game->guilhermeh };
+	SDL_Rect guiRect = { 500,340,game->guilhermew,game->guilhermeh };
 	SDL_RenderCopy(renderer, game->guilhermei, NULL, &guiRect);
 
-	SDL_Rect ricRect = { 80,250,game->ricardow,game->ricardoh };
+	SDL_Rect ricRect = { 500,270,game->ricardow,game->ricardoh };
 	SDL_RenderCopy(renderer, game->ricardoi, NULL, &ricRect);
 
-	SDL_Rect vitRect = { 80,300,game->vitorw,game->vitorh };
+	SDL_Rect vitRect = { 500,410,game->vitorw,game->vitorh};
 	SDL_RenderCopy(renderer, game->vitori, NULL, &vitRect);
 
 	
@@ -336,7 +336,7 @@ void draw_status_cred(GameState *game) {
 
 
 	if (game->sobvoltar >= 1) {
-		SDL_Rect voltRect = { 79,349,game->voltarmenuw + 1,game->voltarmenuh + 1 };
+		SDL_Rect voltRect = { 39,629,game->voltarmenuw+1,game->voltarmenuh+1 };
 		SDL_RenderCopy(renderer, game->voltarmi1, NULL, &voltRect);
 	}
 
@@ -657,14 +657,14 @@ void draw_status_config(GameState *game) {
 	SDL_Rect voltaragoiRect1 = { 120,560,100,100 };
 	SDL_RenderCopy(game->renderer, game->voltarconfig, NULL, &voltaragoiRect1);
 
-	SDL_Rect voltaragoiRect11 = { 300,350,100,115 };
+	SDL_Rect voltaragoiRect11 = { 380,330,150,125 };
 	SDL_RenderCopy(game->renderer, game->audioi, NULL, &voltaragoiRect11);
 
 
 
-	if (game->pont == 1)
+	if (game->pont >= 1)
 	{
-		SDL_Rect pontoa1Rect1 = { 350,400,50,50 };
+		SDL_Rect pontoa1Rect1 = { 771,354,60,60 };
 		SDL_RenderCopy(game->renderer, game->tick, NULL, &pontoa1Rect1);
 	}
 
@@ -708,5 +708,8 @@ void shutdown_status_config(GameState *game) {
 
 	SDL_DestroyTexture(game->audioi);
 	game->audioi == NULL;
+
+	
+
 
 }
