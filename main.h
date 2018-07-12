@@ -40,6 +40,11 @@ typedef struct {
 	float x, y;
 } Corda ;
 
+typedef struct {
+	float x, y;
+} Gaso;
+
+
 
 typedef struct {
 	float x, y, h, w;
@@ -70,10 +75,22 @@ typedef struct {
 }HUD;
 
 
+typedef struct {
+	float x, y, w, h;
+}Nave;
+
 FILE *f;
 
 typedef struct {
 	float scrollx;
+
+
+
+	
+	Nave nave2;
+
+
+	Gaso gasolin;
 
 	Corda corda1;
 	//fundo
@@ -93,10 +110,10 @@ typedef struct {
 	Piso plataforma2[100];
 	char pontuacao[100];
 	
-
+	SDL_Texture *navei;
 	SDL_Texture *tirotext;
-
-
+	SDL_Texture *gas;
+	int gasolina;
 	int n, n1, n2, n3, aux;
 
 	//IMAGENS INGAME mapa 1
@@ -107,7 +124,7 @@ typedef struct {
 	SDL_Texture *voltargoi2;
 	SDL_Texture *fundofim;
 
-
+	SDL_Texture *nave;
 	SDL_Texture *pontof1i;
 	SDL_Texture *pontof2i;
 	SDL_Texture *corda;
@@ -160,7 +177,7 @@ typedef struct {
 	int credw, credh;
 	int cred1w, cred1h;
 	int tempocred;
-	
+	int sobaudio;
 	int cordachao;
 	int sobvoltarfim;
 	int sobsairfim;
