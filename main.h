@@ -22,7 +22,7 @@ typedef struct {
 
 typedef struct {
 	float xe, ye, we, he, vivo,vidas, baseX, baseY, mode,dxe;
-	int  aocontrario, phase,mov;
+	int  aocontrario, phase,mov,mov2;
 
 } Enemy;
 
@@ -79,6 +79,13 @@ typedef struct {
 	float x, y, w, h;
 }Nave;
 
+
+typedef struct {
+	float x, y, w, h, vivo, vidas, baseX, baseY, mode, dx;
+	int  aocontrario, phase, mov;
+}Passaro;
+
+
 FILE *f;
 
 typedef struct {
@@ -88,7 +95,7 @@ typedef struct {
 
 	
 	Nave nave2;
-
+	Passaro voador1[10];
 
 	Gaso gasolin;
 
@@ -132,7 +139,7 @@ typedef struct {
 	SDL_Texture *hudi;
 	SDL_Texture *vidasti;
 	SDL_Texture *vidasi;
-	SDL_Texture *enemy[2];
+	SDL_Texture *enemy[6];
 	SDL_Texture *tiro[MAX_TIROS];
 	SDL_Texture *logomenu1;
 	SDL_Texture *logomenu;
@@ -147,7 +154,7 @@ typedef struct {
 	SDL_Texture *estrela;
 	SDL_Texture *scorei;
 	
-
+	SDL_Texture *voador[2];
 	// ingame mapa 2
 	SDL_Texture *chaomapa2;
 	SDL_Texture *plataformamapa2;
@@ -168,6 +175,9 @@ typedef struct {
 	SDL_Texture *rankingi1;
 	int fase2;
 	
+
+	int loadtext;
+
 	int iden;
 	int labelw, labelh;
 	int sairw, sairh;
