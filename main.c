@@ -1,13 +1,15 @@
+#include <SDL.h>
+#include <SDL_mixer.h>
+#include <SDL_ttf.h>
+#include <SDL_image.h>
 
-#define _CRT_SECURE_NO_WARNINGS
+
 #include	<stdlib.h>
-#include	"SDL.h"
 #include	<stdio.h>
 #include	"main.h"
 #include  "status.h"
 #include <time.h>
-#include "SDL_image.h"
-#include "SDL_mixer.h"
+#include <math.h>
 #define	GRAVIDADE 0.33f
 
 typedef struct {
@@ -23,7 +25,7 @@ void LoadGame(GameState *game) {
 
 
 	game->menusom = Mix_LoadWAV("menusom.wav");
-	if (!game->menusom) {
+	if (game->menusom==NULL) {
 		printf("nao foi possivel encontrar a musica \n");
 		exit(20);
 	}
@@ -32,9 +34,9 @@ void LoadGame(GameState *game) {
 	}
 
 	game->hit = Mix_LoadWAV("Right_Hook-SoundBible.com-1406389182.wav");
-	if (!game->hit) {
+	if (game->hit==NULL) {
 		printf("nao foi possivel encontrar a musica \n");
-		exit(20);
+		exit(77);
 	}
 	else {
 		Mix_VolumeChunk(game->hit, 32);
@@ -51,7 +53,7 @@ void LoadGame(GameState *game) {
 	game->musicafundo = Mix_LoadMUS("Binrpilot_-_01_-_Goof.mp3");
 	if (game->musicafundo == NULL) {
 		printf("nao foi possivel encontrar a musica \n");
-		exit(20);
+		exit(101);
 	}
 
 
@@ -67,20 +69,46 @@ void LoadGame(GameState *game) {
 
 	surface = IMG_Load("corda2.png");
 	if (surface == NULL) {
-		printf("Nao foi possivel achar logo.png");
+		printf("Nao foi possivel achar corda2.png");
 		SDL_Quit();
-		exit(1);
+		exit(987);
 	}
 	game->corda = SDL_CreateTextureFromSurface(game->renderer, surface);
 
 	SDL_FreeSurface(surface);
 
 
+
+	surface = IMG_Load("placa5.png");
+	if (surface == NULL) {
+		printf("Nao foi possivel achar placa5.png");
+		SDL_Quit();
+		exit(955);
+	}
+	game->placagas = SDL_CreateTextureFromSurface(game->renderer, surface);
+
+	SDL_FreeSurface(surface);
+
+
+
+	surface= IMG_Load("ceu_estrelado.png");
+
+	if (surface == NULL) {
+		printf("Nao foi possivel achar ceu_estrelado.jpg");
+		SDL_Quit();
+		exit(987);
+	}
+	game->historia = SDL_CreateTextureFromSurface(game->renderer, surface);
+
+	SDL_FreeSurface(surface);
+
+
+
 	surface = IMG_Load("placa3.png");
 	if (surface == NULL) {
 		printf("Nao foi possivel achar logo.png");
 		SDL_Quit();
-		exit(1);
+		exit(444444);
 	}
 	game->placacorda = SDL_CreateTextureFromSurface(game->renderer, surface);
 
@@ -92,7 +120,7 @@ void LoadGame(GameState *game) {
 	if (surface == NULL) {
 		printf("Nao foi possivel achar logo.png");
 		SDL_Quit();
-		exit(1);
+		exit(3);
 	}
 	game->navei = SDL_CreateTextureFromSurface(game->renderer, surface);
 
@@ -104,7 +132,7 @@ void LoadGame(GameState *game) {
 	if (surface == NULL) {
 		printf("Nao foi possivel achar logo.png");
 		SDL_Quit();
-		exit(1);
+		exit(66666);
 	}
 	game->chaomapa2 = SDL_CreateTextureFromSurface(game->renderer, surface);
 
@@ -117,7 +145,7 @@ void LoadGame(GameState *game) {
 	if (surface == NULL) {
 		printf("Nao foi possivel achar logo.png");
 		SDL_Quit();
-		exit(1);
+		exit(888);
 	}
 	game->plataformamapa2 = SDL_CreateTextureFromSurface(game->renderer, plata);
 
@@ -181,7 +209,7 @@ void LoadGame(GameState *game) {
 	if (surface == NULL) {
 		printf("Nao foi possivel achar logo.png");
 		SDL_Quit();
-		exit(1);
+		exit(99);
 	}
 	game->fundomapa2 = SDL_CreateTextureFromSurface(game->renderer, fundo2);
 
@@ -261,15 +289,6 @@ void LoadGame(GameState *game) {
 	game->enemy[5] = SDL_CreateTextureFromSurface(game->renderer, surface);
 	SDL_FreeSurface(surface);
 
-
-	surface = IMG_Load("controles.png");
-	if (surface == NULL) {
-		printf("Nao foi possivel achar controles.png");
-		SDL_Quit();
-		exit(8);
-	}
-	game->fundocontrole = SDL_CreateTextureFromSurface(game->renderer, surface);
-	SDL_FreeSurface(surface);
 
 
 	//boneco
@@ -414,7 +433,7 @@ void LoadGame(GameState *game) {
 
 	game->label = NULL;
 
-	//carregar musicas 
+	//carregar musicas
 
 
 
@@ -430,11 +449,11 @@ void LoadGame(GameState *game) {
 	game->man.aoContrario = 0;
 	game->man.dimi = 0;
 	game->man.vidas = 3;
-	game->pont = -1;
+	game->pont = 1;
 	game->scrollx = 0;
 	game->sobconti = 0;
 	game->tempocred = 0;
-	game->score = 0;
+	game->score = 1000;
 	game->cordachao = 0;
 	game->corda1.x = 2055;
 	game->corda1.y = 295;
@@ -443,7 +462,7 @@ void LoadGame(GameState *game) {
 	game->gasolina = 0;
 	game->nave2.x = 10100;
 	game->nave2.y = 580;
-
+    game->tempohis=0;
 
 	game->iden = -1;
 
@@ -461,12 +480,12 @@ void LoadGame(GameState *game) {
 
 
 	//init estrelas
-	for (int i = 0; i < 5; i++) {
+	for (int i = 1; i < 8; i++) {
 		game->Star[i].starviva = 1;
 		game->Star[i].visivel = 1;
 	}
-	for (int i = 0; i <20; i++) {
-		game->inimigo[i].vidas = 2;
+	for (int i = 0; i <17; i++) {
+		game->inimigo[i].vidas = 1;
 		game->inimigo[i].vivo = 1;
 
 	}
@@ -475,7 +494,6 @@ void LoadGame(GameState *game) {
 
 
 
-	//primeiro 
 	for (int i = 0; i < 25; i++) {
 		if (i == 5) {
 			i++;
@@ -687,25 +705,17 @@ void LoadGame(GameState *game) {
 	game->plataforma2[52].x = 5497;
 	game->plataforma2[52].y = 330;
 
-	game->plataform[54].h = 50;
-	game->plataform[54].w = 160;
-	game->plataform[54].x = 6700;
-	game->plataform[54].y = 330;
 
-	game->plataform[54].h = 50;
-	game->plataform[54].w = 160;
-	game->plataform[54].x = 6700;
-	game->plataform[54].y = 330;
 
 	game->plataform[54].h = 50;
 	game->plataform[54].w = 160;
 	game->plataform[54].x = 6860;
 	game->plataform[54].y = 330;
 
-	game->plataform[54].h = 50;
-	game->plataform[54].w = 160;
-	game->plataform[54].x = 6700;
-	game->plataform[54].y = 330;
+	game->plataform[70].h = 50;
+	game->plataform[70].w = 160;
+	game->plataform[70].x = 6700;
+	game->plataform[70].y = 330;
 
 
 
@@ -818,10 +828,6 @@ void LoadGame(GameState *game) {
 	game->plataforma2[69].y = 330;
 
 
-
-
-
-
 	//7083 550    8370  280
 
 
@@ -838,13 +844,47 @@ void LoadGame(GameState *game) {
 
 
 
-	game->Star[3].x = 3460;
-	game->Star[3].y = 270;
-	game->Star[3].w = 40;
-	game->Star[3].h = 40;
-	game->Star[3].mode = 0;
-	game->Star[3].baseX = game->Star[1].x;
-	game->Star[3].baseY = game->Star[1].y;
+	game->Star[2].x = 3460;
+	game->Star[2].y = 270;
+	game->Star[2].w = 40;
+	game->Star[2].h = 40;
+	game->Star[2].mode = 0;
+	game->Star[2].baseX = game->Star[2].x;
+	game->Star[2].baseY = game->Star[2].y;
+
+	game->Star[4].x = 7050;
+	game->Star[4].y = 250;
+	game->Star[4].w = 40;
+	game->Star[4].h = 40;
+	game->Star[4].mode = 0;
+	game->Star[4].baseX = game->Star[4].x;
+	game->Star[4].baseY = game->Star[4].y;
+
+
+	game->Star[5].x = 5560;
+	game->Star[5].y = 250;
+	game->Star[5].w = 40;
+	game->Star[5].h = 40;
+	game->Star[5].mode = 0;
+	game->Star[5].baseX = game->Star[5].x;
+	game->Star[5].baseY = game->Star[5].y;
+
+
+	game->Star[6].x = 8650;
+	game->Star[6].y = 250;
+	game->Star[6].w = 40;
+	game->Star[6].h = 40;
+	game->Star[6].mode = 2;
+	game->Star[6].baseX = game->Star[6].x;
+	game->Star[6].baseY = game->Star[6].y;
+
+	game->Star[7].x = 9425;
+	game->Star[7].y = 250;
+	game->Star[7].w = 40;
+	game->Star[7].h = 40;
+	game->Star[7].mode = 0;
+	game->Star[7].baseX = game->Star[7].x;
+	game->Star[7].baseY = game->Star[7].y;
 
 
 	//inimigo
@@ -927,212 +967,137 @@ void LoadGame(GameState *game) {
 	game->inimigo[5].mov2 = 4;
 
 
-
-
-
-
-	game->inimigo[7].xe = 6160;
-
+	game->inimigo[7].xe =20000;
 	game->inimigo[7].ye = 580;
-
 	game->inimigo[7].we = 40;
-
 	game->inimigo[7].he = 60;
-
 	game->inimigo[7].baseX = game->inimigo[7].xe;
-
 	game->inimigo[7].baseY = game->inimigo[7].ye;
-
 	game->inimigo[7].phase = 1;
-
 	game->inimigo[7].mode = 0;
-
 	game->inimigo[7].aocontrario = 0;
-
 	game->inimigo[7].dxe = 10;
-
 	game->inimigo[7].mov2 = 4;
 
 
-
 	game->inimigo[8].xe = 6900;
-
 	game->inimigo[8].ye = 580;
-
 	game->inimigo[8].we = 40;
-
 	game->inimigo[8].he = 60;
-
 	game->inimigo[8].baseX = game->inimigo[8].xe;
-
 	game->inimigo[8].baseY = game->inimigo[8].ye;
-
 	game->inimigo[8].phase = 2;
-
 	game->inimigo[8].mode = 0;
-
 	game->inimigo[8].aocontrario = 0;
-
 	game->inimigo[8].dxe = 10;
-
 	game->inimigo[8].mov2 = 4;
 
 
-
-
 	game->inimigo[9].xe = 7190;
-
 	game->inimigo[9].ye = 580;
-
 	game->inimigo[9].we = 40;
-
 	game->inimigo[9].he = 60;
-
 	game->inimigo[9].baseX = game->inimigo[9].xe;
-
 	game->inimigo[9].baseY = game->inimigo[9].ye;
-
 	game->inimigo[9].phase = 1;
-
 	game->inimigo[9].mode = 0;
-
 	game->inimigo[9].aocontrario = 0;
-
 	game->inimigo[9].dxe = 10;
-
 	game->inimigo[9].mov2 = 4;
 
 
-
-
 	game->inimigo[10].xe = 7000;
-
 	game->inimigo[10].ye = 265;
-
 	game->inimigo[10].we = 40;
-
 	game->inimigo[10].he = 60;
-
 	game->inimigo[10].baseX = game->inimigo[10].xe;
-
 	game->inimigo[10].baseY = game->inimigo[10].ye;
-
 	game->inimigo[10].phase = 2;
-
 	game->inimigo[10].mode = 0;
-
 	game->inimigo[10].aocontrario = 0;
-
 	game->inimigo[10].dxe = 10;
-
 	game->inimigo[10].mov2 = 4;
 
 
-
-
 	game->inimigo[11].xe = 7400;
-
 	game->inimigo[11].ye = 580;
-
 	game->inimigo[11].we = 40;
-
 	game->inimigo[11].he = 60;
-
 	game->inimigo[11].baseX = game->inimigo[11].xe;
-
 	game->inimigo[11].baseY = game->inimigo[11].ye;
-
 	game->inimigo[11].phase = 2;
-
 	game->inimigo[11].mode = 0;
-
 	game->inimigo[11].aocontrario = 0;
-
 	game->inimigo[11].dxe = 10;
-
 	game->inimigo[11].mov2 = 4;
 
 
 
-
 	game->inimigo[12].xe = 8600;
-
 	game->inimigo[12].ye = 580;
-
 	game->inimigo[12].we = 40;
-
 	game->inimigo[12].he = 60;
-
 	game->inimigo[12].baseX = game->inimigo[12].xe;
-
 	game->inimigo[12].baseY = game->inimigo[12].ye;
-
 	game->inimigo[12].phase = 2;
-
 	game->inimigo[12].mode = 0;
-
 	game->inimigo[12].aocontrario = 0;
-
 	game->inimigo[12].dxe = 10;
-
 	game->inimigo[12].mov2 = 4;
 
 
-
-
-
 	game->inimigo[13].xe = 9065;
-
 	game->inimigo[13].ye = 420;
-
 	game->inimigo[13].we = 40;
-
 	game->inimigo[13].he = 60;
-
 	game->inimigo[13].baseX = game->inimigo[13].xe;
-
 	game->inimigo[13].baseY = game->inimigo[13].ye;
-
 	game->inimigo[13].phase = 1;
-
 	game->inimigo[13].mode = 0;
-
 	game->inimigo[13].aocontrario = 0;
-
 	game->inimigo[13].dxe = 10;
-
 	game->inimigo[13].mov2 = 4;
 
 
 
-
 	game->inimigo[14].xe = 9810;
-
 	game->inimigo[14].ye = 420;
-
 	game->inimigo[14].we = 40;
-
 	game->inimigo[14].he = 60;
-
 	game->inimigo[14].baseX = game->inimigo[14].xe;
-
 	game->inimigo[14].baseY = game->inimigo[14].ye;
-
 	game->inimigo[14].phase = 2;
-
 	game->inimigo[14].mode = 0;
-
 	game->inimigo[14].aocontrario = 0;
-
 	game->inimigo[14].dxe = 10;
-
 	game->inimigo[14].mov2 = 4;
 
 
 
+	game->inimigo[15].xe = 9600;
+	game->inimigo[15].ye = 580;
+	game->inimigo[15].we = 40;
+	game->inimigo[15].he = 60;
+	game->inimigo[15].baseX = game->inimigo[15].xe;
+	game->inimigo[15].baseY = game->inimigo[15].ye;
+	game->inimigo[15].phase = 1;
+	game->inimigo[15].mode = 0;
+	game->inimigo[15].aocontrario = 0;
+	game->inimigo[15].dxe = 10;
+	game->inimigo[15].mov2 = 4;
 
 
-
+	game->inimigo[6].xe = 9200;
+	game->inimigo[6].ye = 580;
+	game->inimigo[6].we = 40;
+	game->inimigo[6].he = 60;
+	game->inimigo[6].baseX = game->inimigo[16].xe;
+	game->inimigo[6].baseY = game->inimigo[16].ye;
+	game->inimigo[6].phase = 2;
+	game->inimigo[6].mode = 0;
+	game->inimigo[6].aocontrario = 0;
+	game->inimigo[6].dxe = 10;
+	game->inimigo[6].mov2 = 4;
 
 
 
@@ -1156,6 +1121,71 @@ void LoadGame(GameState *game) {
 	game->morcego1[1].mov = 0;
 	game->morcego1[1].vivo = 1;
 
+	game->morcego1[2].x = 6300;
+	game->morcego1[2].y = 350;
+	game->morcego1[2].w = 40;
+	game->morcego1[2].h = 40;
+	game->morcego1[2].baseX = game->morcego1[2].x;
+	game->morcego1[2].baseY = game->morcego1[2].y;
+	game->morcego1[2].phase = 1;
+	game->morcego1[2].mode = 0;
+	game->morcego1[2].aocontrario = 0;
+	game->morcego1[2].dx = 10;
+	game->morcego1[2].mov = 0;
+	game->morcego1[2].vivo = 1;
+
+	game->morcego1[3].x = 7000;
+	game->morcego1[3].y = 450;
+	game->morcego1[3].w = 40;
+	game->morcego1[3].h = 40;
+	game->morcego1[3].baseX = game->morcego1[3].x;
+	game->morcego1[3].baseY = game->morcego1[3].y;
+	game->morcego1[3].phase = 1;
+	game->morcego1[3].mode = 0;
+	game->morcego1[3].aocontrario = 0;
+	game->morcego1[3].dx = 10;
+	game->morcego1[3].mov = 0;
+	game->morcego1[3].vivo = 1;
+
+	game->morcego1[4].x = 8200;
+	game->morcego1[4].y = 220;
+	game->morcego1[4].w = 40;
+	game->morcego1[4].h = 40;
+	game->morcego1[4].baseX = game->morcego1[4].x;
+	game->morcego1[4].baseY = game->morcego1[4].y;
+	game->morcego1[4].phase = 1;
+	game->morcego1[4].mode = 0;
+	game->morcego1[4].aocontrario = 0;
+	game->morcego1[4].dx = 10;
+	game->morcego1[4].mov = 0;
+	game->morcego1[4].vivo = 1;
+
+	game->morcego1[5].x = 8650;
+	game->morcego1[5].y = 450;
+	game->morcego1[5].w = 40;
+	game->morcego1[5].h = 40;
+	game->morcego1[5].baseX = game->morcego1[5].x;
+	game->morcego1[5].baseY = game->morcego1[5].y;
+	game->morcego1[5].phase = 1;
+	game->morcego1[5].mode = 0;
+	game->morcego1[5].aocontrario = 0;
+	game->morcego1[5].dx = 10;
+	game->morcego1[5].mov = 0;
+	game->morcego1[5].vivo = 1;
+
+	game->morcego1[6].x = 9500;
+	game->morcego1[6].y = 220;
+	game->morcego1[6].w = 40;
+	game->morcego1[6].h = 40;
+	game->morcego1[6].baseX = game->morcego1[6].x;
+	game->morcego1[6].baseY = game->morcego1[6].y;
+	game->morcego1[6].phase = 1;
+	game->morcego1[6].mode = 0;
+	game->morcego1[6].aocontrario = 0;
+	game->morcego1[6].dx = 10;
+	game->morcego1[6].mov = 0;
+	game->morcego1[6].vivo = 1;
+
 
 
 
@@ -1165,7 +1195,7 @@ void LoadGame(GameState *game) {
 
 
 
-	game->voador1[1].x = 200;
+	game->voador1[1].x = 900;
 	game->voador1[1].y = 220;
 	game->voador1[1].w = 40;
 	game->voador1[1].h = 40;
@@ -1178,20 +1208,70 @@ void LoadGame(GameState *game) {
 	game->voador1[1].mov = 0;
 	game->voador1[1].vivo = 1;
 
+	game->voador1[2].x = 1500;
+	game->voador1[2].y = 290;
+	game->voador1[2].w = 40;
+	game->voador1[2].h = 40;
+	game->voador1[2].baseX = game->voador1[2].x;
+	game->voador1[2].baseY = game->voador1[2].y;
+	game->voador1[2].phase = 2;
+	game->voador1[2].mode = 0;
+	game->voador1[2].aocontrario = 0;
+	game->voador1[2].dx = 10;
+	game->voador1[2].mov = 0;
+	game->voador1[2].vivo = 1;
+
+	game->voador1[3].x = 3450;
+	game->voador1[3].y = 250;
+	game->voador1[3].w = 40;
+	game->voador1[3].h = 40;
+	game->voador1[3].baseX = game->voador1[3].x;
+	game->voador1[3].baseY = game->voador1[3].y;
+	game->voador1[3].phase = 2;
+	game->voador1[3].mode = 0;
+	game->voador1[3].aocontrario = 0;
+	game->voador1[3].dx = 10;
+	game->voador1[3].mov = 0;
+	game->voador1[3].vivo = 1;
+
+	game->voador1[4].x = 1100;
+	game->voador1[4].y = 540;
+	game->voador1[4].w = 40;
+	game->voador1[4].h = 40;
+	game->voador1[4].baseX = game->voador1[4].x;
+	game->voador1[4].baseY = game->voador1[4].y;
+	game->voador1[4].phase = 2;
+	game->voador1[4].mode = 0;
+	game->voador1[4].aocontrario = 0;
+	game->voador1[4].dx = 10;
+	game->voador1[4].mov = 0;
+	game->voador1[4].vivo = 1;
+
+
+
+
 
 
 }
-	
+
 
 
 
 void process(GameState *game) {
 	//tempo
-	game->tempo++;
+
+
 
 
 	if (game->statusState == STATUS_STATE_GAME)
 	{
+
+		game->tempo++;
+
+
+		if (game->tempo % 60 == 0) {
+			game->score-=10;
+		}
 
 		//movimentação do personagem
 
@@ -1206,7 +1286,7 @@ void process(GameState *game) {
 		}
 
 
-		for (int i = 0; i<20; i++) {
+		for (int i = 1; i<5; i++) {
 
 			if (game->voador1[i].vivo == 1) {
 				if (game->tempo % 8 == 0) {
@@ -1222,8 +1302,8 @@ void process(GameState *game) {
 		}
 
 
-		
-			for(int i=0;i<20;i++){
+
+		for (int i = 1; i<7; i++) {
 
 			if (game->morcego1[i].vivo == 1) {
 				if (game->tempo % 8 == 0) {
@@ -1260,39 +1340,165 @@ void process(GameState *game) {
 		game->man.noChao = 0;
 	}
 
-	if ((game->man.x > 0 && game->man.x < 3100) || (game->man.x > 4920 && game->man.x<9400)) {
+	if ((game->man.x > 0 && game->man.x < 3100) || (game->man.x > 4920 && game->man.x <9400)) {
 		game->scrollx = -game->man.x + 300;
 		if (game->scrollx > 0)
 			game->scrollx = 0;
 	}
-	if (game->man.y > 850) {
-		game->man.vidas = 0;
+	if (game->man.y > 1000) {
+
+		game->man.vidas =0;
+
 
 	}
-	if (game->man.vidas == 0) {
+	if (game->man.vidas == 0 || game->score==0) {
+		game->score = 0;
 		SDL_Delay(150);
 
 		game->statusState = STATUS_STATE_GAMEOVER;
 		init_status_over(game);
-		game->man.vidas = 3;
+
 	}
 
 
 	if (game->statusState == STATUS_STATE_GAME) {
-		for (int i = 0; i < 20; i++)
+		for (int i = 1; i < 7; i++)
 		{
 
 			if (game->morcego1[i].vivo == 1) {
 				game->morcego1[i].x = game->morcego1[i].baseX + sinf(100 + game->tempo*0.02f) * 250;
 
 			}
+                if (i == 1) {
+
+				if (game->morcego1[i].x < 5270)
+					game->morcego1[i].aocontrario = 0;
+				// aaaaaa
+
+				if (game->morcego1[i].x >5700)
+					game->morcego1[i].aocontrario = 1;
+
+			}
 
 
+			if (i == 2) {
+
+				if (game->morcego1[i].x < 6085)
+					game->morcego1[i].aocontrario = 0;
+				// aaaaaa
+
+				if (game->morcego1[i].x >6525)
+					game->morcego1[i].aocontrario = 1;
+
+			}
+
+
+			if (i == 3) {
+
+				if (game->morcego1[i].x < 6768)
+					game->morcego1[i].aocontrario = 0;
+				// aaaaaa
+
+				if (game->morcego1[i].x >7235)
+					game->morcego1[i].aocontrario = 1;
+
+			}
+
+			if (i == 4) {
+
+				if (game->morcego1[i].x < 7975)
+					game->morcego1[i].aocontrario = 0;
+				// aaaaaa
+
+				if (game->morcego1[i].x >8426)
+					game->morcego1[i].aocontrario = 1;
+
+			}
+
+			if (i == 5) {
+
+				if (game->morcego1[i].x < 8459)
+					game->morcego1[i].aocontrario = 0;
+				// aaaaaa
+
+				if (game->morcego1[i].x >8884)
+					game->morcego1[i].aocontrario = 1;
+
+			}
+
+			if (i == 6) {
+
+				if (game->morcego1[i].x < 9270)
+					game->morcego1[i].aocontrario = 0;
+				// aaaaaa
+
+				if (game->morcego1[i].x >9730)
+					game->morcego1[i].aocontrario = 1;
+
+			}
+
+		}
+
+//-------------------------------------------------------------------------------------------------------------//
+
+			for(int i=1;i<5;i++){
 			if (game->voador1[i].vivo == 1) {
 				game->voador1[i].x = game->voador1[i].baseX + sinf(100 + game->tempo*0.02f) * 250;
 
 			}
 
+			if (i == 1) {
+
+				if (game->voador1[i].x < 675)
+					game->voador1[i].aocontrario = 1;
+
+
+				if (game->voador1[i].x > 1138)
+					game->voador1[i].aocontrario = 0;
+
+			}
+
+
+			if (i == 2) {
+
+				if (game->voador1[i].x < 1265)
+					game->voador1[i].aocontrario = 1;
+
+
+				if (game->voador1[i].x > 1727)
+					game->voador1[i].aocontrario = 0;
+
+			}
+
+			if (i == 3) {
+
+				if (game->voador1[i].x < 3225)
+					game->voador1[i].aocontrario = 1;
+
+
+				if (game->voador1[i].x > 3651)
+					game->voador1[i].aocontrario = 0;
+
+			}
+
+
+			if (i == 4) {
+
+				if (game->voador1[i].x < 875)
+					game->voador1[i].aocontrario = 1;
+
+
+				if (game->voador1[i].x > 1299)
+					game->voador1[i].aocontrario = 0;
+
+			}
+
+			}
+
+
+
+
+for(int i=0;i<16;i++){
 
 			if (fabs(game->inimigo[i].xe - game->man.x) < 1350 && game->inimigo[i].vivo == 1) {
 
@@ -1406,33 +1612,153 @@ void process(GameState *game) {
 
 				if (i == 5) {
 
-					game->inimigo[i].xe = game->inimigo[i].baseX + sinf(5 + game->tempo*0.07f) * 65;
-
-					if (game->inimigo[5].xe > 5960) {
-
-
-
-						game->inimigo[5].aocontrario = 0;
+					if (game->inimigo[i].xe > 5320) {
+						game->inimigo[i].aocontrario = 0;
 
 					}
 
-					if (game->inimigo[5].xe < 5710) {
+					if (game->inimigo[i].xe < 5200) {
+						game->inimigo[i].aocontrario = 1;
 
-						game->inimigo[5].aocontrario = 1;
+					}
+				}
+
+				if (i == 7) {
+
+					if (game->inimigo[i].xe > 6210) {
+						game->inimigo[i].aocontrario = 0;
 
 					}
 
+					if (game->inimigo[i].xe < 6120) {
+						game->inimigo[i].aocontrario = 1;
+
+					}
+				}
+
+				if (i == 8) {
+
+					if (game->inimigo[i].xe > 6940) {
+						game->inimigo[i].aocontrario = 0;
+
+					}
+
+					if (game->inimigo[i].xe < 6830) {
+						game->inimigo[i].aocontrario = 1;
+
+					}
+				}
+
+				if (i == 9) {
+
+					if (game->inimigo[i].xe > 7246) {
+						game->inimigo[i].aocontrario = 0;
+
+					}
+
+					if (game->inimigo[i].xe < 7120) {
+						game->inimigo[i].aocontrario = 1;
+
+					}
+				}
+
+				if (i == 10) {
+
+					if (game->inimigo[i].xe > 7050) {
+						game->inimigo[i].aocontrario = 0;
+
+					}
+
+					if (game->inimigo[i].xe < 6930) {
+						game->inimigo[i].aocontrario = 1;
+
+					}
+				}
+
+				if (i == 11) {
+
+					if (game->inimigo[i].xe > 7455) {
+						game->inimigo[i].aocontrario = 0;
+
+					}
+
+					if (game->inimigo[i].xe < 7343) {
+						game->inimigo[i].aocontrario = 1;
+
+					}
+				}
+
+				if (i == 12) {
+
+					if (game->inimigo[i].xe > 8658) {
+						game->inimigo[i].aocontrario = 0;
+
+					}
+
+					if (game->inimigo[i].xe < 8545) {
+						game->inimigo[i].aocontrario = 1;
+
+					}
+				}
+
+				if (i == 13) {
+
+					if (game->inimigo[i].xe > 9118) {
+						game->inimigo[i].aocontrario = 0;
+
+					}
+
+					if (game->inimigo[i].xe < 8998) {
+						game->inimigo[i].aocontrario = 1;
+
+					}
+				}
+
+				if (i == 14) {
+
+					if (game->inimigo[i].xe > 9860) {
+						game->inimigo[i].aocontrario = 0;
+
+					}
+
+					if (game->inimigo[i].xe < 9736) {
+						game->inimigo[i].aocontrario = 1;
+
+					}
+				}
+
+				if (i == 15) {
+
+					if (game->inimigo[i].xe > 9645) {
+						game->inimigo[i].aocontrario = 0;
+
+					}
+
+					if (game->inimigo[i].xe < 9545) {
+						game->inimigo[i].aocontrario = 1;
+
+					}
+				}
+
+				if (i == 6) {
+
+					if (game->inimigo[i].xe > 9256) {
+						game->inimigo[i].aocontrario = 0;
+
+					}
+
+					if (game->inimigo[i].xe < 9127) {
+						game->inimigo[i].aocontrario = 1;
+
+					}
 				}
 
 			}
 
 
-
-
-
 		}
 
-		for (int i = 0; i < 5; i++) {
+		for (int i = 1; i < 8; i++) {
 			if (game->Star[i].mode == 2 && fabs(game->Star[i].x - game->man.x)<1350) {
 				game->Star[i].y = game->Star[i].baseY + cosf(1 + game->tempo*0.06f) * 75;
 			}
@@ -1441,10 +1767,9 @@ void process(GameState *game) {
 
 	}
 
-	for (int i = 0; i < 30; i++) {
+	for (int i = 0; i < 16; i++) {
 
-		if (game->inimigo[i].dxe == 10 && fabs(game->inimigo[i].xe - game->man.x)<1350)
-		{
+
 			if (i >= 0 && i < 5) {
 				if (game->tempo % 15 == 0) {
 					if (game->inimigo[i].mov == 0) {
@@ -1468,7 +1793,7 @@ void process(GameState *game) {
 			}
 
 
-		}
+
 	}
 
 	if (game->man.vidas == 3) {
@@ -1487,6 +1812,7 @@ void process(GameState *game) {
 		game->heart[2].visivel = 0;
 	}
 	if (game->man.vidas == 0) {
+		game->score = 0;
 		game->heart[0].visivel = 0;
 		game->heart[1].visivel = 0;
 		game->heart[2].visivel = 0;
@@ -1512,7 +1838,7 @@ int collide2d(float x1, float y1, float x2, float y2, float wt1, float ht1, floa
 void colisaoDetect(GameState *game) {
 
 	//Check for collision with estrela
-	for (int i = 0; i < 5; i++)
+	for (int i = 1; i < 8; i++)
 	{
 		if (collide2d(game->man.x, game->man.y, game->Star[i].x, game->Star[i].y, 74, 94, 30, 40))
 		{
@@ -1522,17 +1848,17 @@ void colisaoDetect(GameState *game) {
 				game->Star[i].starviva = 0;
 				game->Star[i].visivel = 0;
 			}
-			break;
+
 		}
 	}
 
-	for (int i = 0; i < 20; i++)
+	for (int i = 0; i < 16; i++)
 	{
 		if (collide2d(game->man.x, game->man.y, game->inimigo[i].xe, game->inimigo[i].ye, 74, 94, 35, 55))
 		{
 			if (game->inimigo[i].vivo == 1)
 			{
-				game->score += 35;
+				game->score -= 100;
 				game->inimigo[i].vivo = 0;
 				game->man.vidas--;
 				Mix_PlayChannel(-1, game->hit, 0);
@@ -1544,25 +1870,54 @@ void colisaoDetect(GameState *game) {
 
 
 			}
-			break;
+
 		}
 	}
-	if (collide2d(game->man.x, game->man.y, game->morcego1[1].x, game->morcego1[1].y, 74, 94, 40, 40))
+	for (int i = 1; i < 8; i++)
 	{
-		if (game->morcego1[1].vivo == 1)
+		if (collide2d(game->man.x, game->man.y, game->morcego1[i].x, game->morcego1[i].y, 74, 94, 40, 40))
 		{
-			game->score += 75;
-			game->morcego1[1].vivo = 0;
-			game->man.vidas--;
-			Mix_PlayChannel(-1, game->hit, 0);
-			game->man.mov = 2;
-			if (game->tempo % 10 == 0) {
-				game->man.mov = 0;
+			if (game->morcego1[i].vivo == 1)
+			{
+				game->morcego1[i].vivo = 0;
+				game->man.vidas--;
+				game->score -= 100;
+				Mix_PlayChannel(-1, game->hit, 0);
+				game->man.mov = 2;
+				if (game->tempo % 10 == 0) {
+					game->man.mov = 0;
+
+				}
+
+
+
 			}
+
+		}
+
+	}
+
+	for (int i = 1; i < 5; i++)
+	{
+		if ( game->voador1[i].vivo == 1 && collide2d(game->man.x, game->man.y, game->voador1[i].x, game->voador1[i].y, 74, 94, 40, 40))
+		{
+
+				game->score -= 100;
+				game->voador1[i].vivo = 0;
+				game->man.vidas--;
+				Mix_PlayChannel(-1, game->hit, 0);
+				game->man.mov = 2;
+				if (game->tempo % 10 == 0) {
+					game->man.mov = 0;
+
+				}
+
+
 
 
 
 		}
+
 
 	}
 
@@ -1818,7 +2173,7 @@ int processEvents(SDL_Window *window, GameState *game) {
 				if (game->sobnovo >= 1) {
 					Mix_PlayChannel(-1, game->menusom, 0);
 
-					game->statusState = STATUS_STATE_CONTROLES;
+					game->statusState = STATUS_STATE_HISTORIA;
 					game->man.vidas = 3;
 					game->sobnovo = 0;
 				}
@@ -1859,7 +2214,7 @@ int processEvents(SDL_Window *window, GameState *game) {
 					Mix_PlayChannel(-1, game->menusom, 0);
 					LoadGame(game);
 					game->statusState = STATUS_STATE_MENU;
-				
+
 					game->sobvoltargo = 0;
 
 				}
@@ -1876,7 +2231,7 @@ int processEvents(SDL_Window *window, GameState *game) {
 					Mix_PlayChannel(-1, game->menusom, 0);
 					LoadGame(game);
 					game->statusState = STATUS_STATE_MENU;
-					
+
 					game->sobvoltarfim = 0;
 				}
 				if (game->sobsairfim >= 1) {
@@ -1893,7 +2248,7 @@ int processEvents(SDL_Window *window, GameState *game) {
 					Mix_PlayChannel(-1, game->menusom, 0);
 					LoadGame(game);
 					game->statusState = STATUS_STATE_MENU;
-					
+
 					game->sobvoltarm = 0;
 				}
 				if (game->sobsairm >= 1) {
@@ -1908,9 +2263,10 @@ int processEvents(SDL_Window *window, GameState *game) {
 
 						Mix_VolumeMusic(-0);
 					}
+
 					if (game->pont == 0) {
 						game->pont = 1;
-
+                Mix_VolumeMusic(5);
 					}
 				}
 
@@ -1930,11 +2286,11 @@ int processEvents(SDL_Window *window, GameState *game) {
 
 			break;
 
-		case SDL_QUIT:
-			//fecha o jogo
+		case SDL_QUIT:{
+
 			done = 1;
 			break;
-
+		}
 
 
 		case SDL_KEYDOWN:
@@ -1945,9 +2301,8 @@ int processEvents(SDL_Window *window, GameState *game) {
 
 			case SDLK_f:
 
-			
 
-
+                    printf("%f\n",game->man.x);
 				if (game->statusState == STATUS_STATE_GAME) {
 					if (game->man.x >= 2040 && game->man.x <= 2060 && game->man.y >= 230 && game->man.y <= 250) {
 						game->cordachao = 1;
@@ -1988,34 +2343,23 @@ int processEvents(SDL_Window *window, GameState *game) {
 				break;
 
 			case SDLK_UP:
-				if (game->man.noChao == 1)
-				{
+				if (game->statusState==STATUS_STATE_GAME && game->man.noChao == 1){
 					game->man.dy = -10;
 					game->man.noChao = 0;
-					game->score++;
-
-					break;
-			
-			case SDLK_RETURN:
-				if (game->statusState == STATUS_STATE_CONTROLES) {
-					game->statusState = STATUS_STATE_GAME;
-
+                            game->man.vidas=game->man.vidas;
+                            game->score = game->score;
 				}
+					break;
 
+			case SDLK_RETURN:
+				if (game->statusState == STATUS_STATE_HISTORIA) {
+					game->statusState = STATUS_STATE_GAME;
+                        break;
+				}
 
 				break;
 
 
-
-
-
-
-
-
-
-
-
-				}
 			}
 		}
 
@@ -2025,17 +2369,19 @@ int processEvents(SDL_Window *window, GameState *game) {
 	}
 	// pulo mais forte
 	const Uint8 *state = SDL_GetKeyboardState(NULL);
-	if (state[SDL_SCANCODE_UP])
+	if (state[SDL_SCANCODE_UP] && game->statusState==STATUS_STATE_GAME)
 	{
 		game->man.dy -= 0.06f;
-
-
+             game->man.vidas=game->man.vidas;
+                game->score = game->score;
 	}
+
 	//ANDANDO
-	if (state[SDL_SCANCODE_LEFT])
+	if (state[SDL_SCANCODE_LEFT] && game->statusState==STATUS_STATE_GAME)
 	{
-		if (game->man.x >= 0 && game->man.x <= 4300 || game->man.x>4890)
+		if ((game->man.x >= 0 && game->man.x <= 4300) || (game->man.x>4890)){
 			game->man.dx -= 0.5;
+		}
 		if (game->man.dx < -6)
 		{
 			game->man.dx = -6;
@@ -2046,7 +2392,7 @@ int processEvents(SDL_Window *window, GameState *game) {
 
 
 	}
-	else if (state[SDL_SCANCODE_RIGHT]) {
+	else if (state[SDL_SCANCODE_RIGHT] && game->statusState==STATUS_STATE_GAME) {
 
 
 		game->man.dx += 0.5;
@@ -2076,10 +2422,7 @@ int processEvents(SDL_Window *window, GameState *game) {
 
 	}
 
-	if (game->sobtick == 1) {
-		Mix_PlayChannel(-1, game->menusom, 0);
 
-	}
 	return done;
 
 
@@ -2099,8 +2442,8 @@ void doRender(SDL_Renderer *renderer, GameState *game)
 		draw_status_menu(game);
 	}
 
-	else if (game->statusState == STATUS_STATE_GAMEOVER) {
-
+if (game->statusState == STATUS_STATE_GAMEOVER) {
+		game->score = 0;
 		draw_status_over(game);
 
 
@@ -2110,28 +2453,36 @@ void doRender(SDL_Renderer *renderer, GameState *game)
 
 	}
 
-	else if (game->statusState == STATUS_STATE_CREDITS) {
+	if (game->statusState == STATUS_STATE_CREDITS) {
 
 		draw_status_cred(game);
 
 	}
-	else if (game->statusState == STATUS_STATE_CONTROLES) {
-		SDL_Rect fundoconRect = { 0,0,1280,700 };
-		SDL_RenderCopy(renderer, game->fundocontrole, NULL, &fundoconRect);
-		game->tempocred++;
-		if (game->tempocred == 200)
+
+	if(game->statusState==STATUS_STATE_HISTORIA){
+
+        SDL_Rect fundohist = {0,0,1280,700};
+        SDL_RenderCopy(renderer,game->historia,NULL,&fundohist);
+
+
+            game->tempohis++;
+            if (game->tempohis == 2000)
 			game->statusState = STATUS_STATE_GAME;
 
 
 	}
 
-	else if (game->statusState == STATUS_STATE_GAME) {
 
 
 
 
-		SDL_DestroyTexture(game->fundocontrole);
-		game->fundocontrole = NULL;
+	if (game->statusState == STATUS_STATE_GAME) {
+
+
+
+
+		SDL_DestroyTexture(game->historia);
+		game->historia = NULL;
 
 
 
@@ -2153,214 +2504,219 @@ void doRender(SDL_Renderer *renderer, GameState *game)
 		else {
 			SDL_Rect fundo2 = { 0,0,1280,700 };
 			SDL_RenderCopy(renderer, game->paisa2, NULL, &fundo2);
+		}
 
-
-
-			if (game->morcego1[1].vivo == 1) {
-				SDL_Rect morcegoRect = { game->scrollx + game->morcego1[1].x*1.0f,game->morcego1[1].y,40,40 };
-				SDL_RenderCopyEx(renderer, game->morcego[game->morcego1[1].mov], NULL, &morcegoRect, 0, NULL, game->morcego1[1].aocontrario == 0);
+		for (int i = 0; i < 25; i++) {
+			if (game->morcego1[i].vivo == 1) {
+				SDL_Rect morcegoRect = { game->scrollx + game->morcego1[i].x,game->morcego1[i].y,(float)40,(float)40 };
+				SDL_RenderCopyEx(renderer, game->morcego[game->morcego1[i].mov], NULL, &morcegoRect, 0, NULL, game->morcego1[i].aocontrario == 0);
+			}
+		}
+		for (int i = 1; i < 5; i++) {
+			if (game->voador1[i].vivo == 1) {
+				SDL_Rect voador1Rect = { game->scrollx + game->voador1[i].x,game->voador1[i].y,(float)40,(float)40 };
+				SDL_RenderCopyEx(renderer, game->voador[game->voador1[i].mov], NULL, &voador1Rect, 0, NULL, game->voador1[i].aocontrario == 0);
 			}
 		}
 
-		if (game->voador1[1].vivo == 1) {
-			SDL_Rect voador1Rect = { game->scrollx + game->voador1[1].x*1.0f,game->voador1[1].y,40,40 };
-			SDL_RenderCopyEx(renderer, game->voador[game->voador1[1].mov], NULL, &voador1Rect, 0, NULL, game->voador1[1].aocontrario == 0);
+
+		if (game->man.vidas == 0) {
+			game->score = 0;
+
 		}
+			sprintf(game->pontuacao, "SCORE:   %d", (int)game->score);
+			SDL_Color white = { 255,255,255,255 };
+
+			sprintf(game->pontuacao2, "SCORE:   0");
+
+
+
+			SDL_Surface *pontos = TTF_RenderText_Solid(game->fonte2, game->pontuacao, white);
+			game->scorei = SDL_CreateTextureFromSurface(game->renderer, pontos);
+			SDL_FreeSurface(pontos);
 
 
 
 
-		sprintf(game->pontuacao, "SCORE:   %d", (int)game->score);
-		SDL_Color white = { 255,255,255,255 };
-
-		SDL_Surface *pontos = TTF_RenderText_Solid(game->fonte2, game->pontuacao, white);
-		game->scorei = SDL_CreateTextureFromSurface(game->renderer, pontos);
-		SDL_FreeSurface(pontos);
+			//piso
 
 
+			for (int k = 0; k < 65; k++) {
 
-
-		//piso
-		for (int i = 0; i < 75; i++)
-		{
-
-
-
-
-			if (fabs(game->piso[i].x - game->man.x) < 1350) {
-				SDL_Rect pisoRect = { game->scrollx + game->piso[i].x*1.0f, game->piso[i].y*1.0f,game->piso[i].w * 1.0f, game->piso[i].h*1.0f };
-				SDL_RenderCopy(renderer, game->Chao, NULL, &pisoRect);
-			}
-
-
-			if (fabs(game->plataform[i].x - game->man.x) < 1350) {
-				SDL_Rect platRect = { game->scrollx + game->plataform[i].x*1.0f, game->plataform[i].y*1.0f,game->plataform[i].w + 10 * 1.0f, game->plataform[i].h + 15 * 1.0f };
-				SDL_RenderCopy(renderer, game->Plataforma, NULL, &platRect);
-			}
-
-
-			if (fabs(game->piso2[i].x - game->man.x) < 1350) {
-				SDL_Rect piso1Rect = { game->scrollx + game->piso2[i].x*1.0f, game->piso2[i].y*1.0f,game->piso[i].w * 1.0f, game->piso[i].h*1.0f };
-				SDL_RenderCopy(game->renderer, game->chaomapa2, NULL, &piso1Rect);
-			}
-
-
-			if (fabs(game->plataforma2[i].x - game->man.x) < 1350) {
-				SDL_Rect plat2Rect = { game->scrollx + game->plataforma2[i].x*1.0f, game->plataforma2[i].y*1.0f,game->plataform[i].w + 10 * 1.0f, game->plataform[i].h + 15 * 1.0f };
-				SDL_RenderCopy(game->renderer, game->plataformamapa2, NULL, &plat2Rect);
-			}
-
-
-
-			if (game->Star[i].visivel == 1 && fabs(game->Star[i].x - game->man.x) < 1350) {
-				SDL_Rect starRect = { game->scrollx + game->Star[i].x*1.0f, game->Star[i].y*1.0f,game->Star[i].w, game->Star[i].h };
-				SDL_RenderCopy(renderer, game->estrela, NULL, &starRect);
-			}
-			if (i >= 0 && i < 5) {
-				if (game->inimigo[i].vivo == 1 && fabs(game->inimigo[i].xe - game->man.x) < 1350) {
-					SDL_Rect inimigoRect = { game->scrollx + game->inimigo[i].xe*1.0f, game->inimigo[i].ye*1.0f,(float)40,(float)70 };
-					SDL_RenderCopyEx(renderer, game->enemy[game->inimigo[i].mov], NULL, &inimigoRect, 0, NULL, game->inimigo[i].aocontrario == 0);
-				}
-			}
-			//mov2
-			if (i >= 5) {
-				if (game->inimigo[i].vivo == 1 && fabs(game->inimigo[i].xe - game->man.x) < 1350) {
-					SDL_Rect inimigoRect = { game->scrollx + game->inimigo[i].xe*1.0f, game->inimigo[i].ye*1.0f,(float)40,(float)70 };
-					SDL_RenderCopyEx(renderer, game->enemy[game->inimigo[i].mov2], NULL, &inimigoRect, 0, NULL, game->inimigo[i].aocontrario == 0);
+				if (fabs(game->piso[k].x - game->man.x) < 1350) {
+					SDL_Rect pisoRect = { game->scrollx + game->piso[k].x, game->piso[k].y,game->piso[k].w , game->piso[k].h};
+					SDL_RenderCopy(renderer, game->Chao, NULL, &pisoRect);
 				}
 			}
 
 
-
-
-			
-
-
-
-
-			
-
-
-			
-
-
-
-
-
-		}
-
-		if (game->cordachao == 0) {
-			SDL_Rect cordatRect = { game->scrollx + game->corda1.x,game->corda1.y,(float)40,(float)40 };
-			SDL_RenderCopy(renderer, game->corda, NULL, &cordatRect);
-		}
-
-		
-
-
-
-
-
-		SDL_Rect hudRect = { 0,0,1280,80 };
-		SDL_RenderCopy(renderer, game->hudi, NULL, &hudRect);
-
-		SDL_Rect placaRect = { game->scrollx + 3938,(float)565,(float)50,(float)50 };
-		SDL_RenderCopy(renderer, game->placacorda, NULL, &placaRect);
-
-
-
-		for (int i = 0; i < 3; i++) {
-			if (game->heart[i].visivel == 1) {
-
-				if (i == 0) {
-					SDL_Rect heartRect = { 220,28,50,50 };
-					SDL_RenderCopy(renderer, game->vidasi, NULL, &heartRect);
+			for (int u = 0; u < 70; u++) {
+				if (fabs(game->plataform[u].x - game->man.x) < 1350) {
+					SDL_Rect platRect = { game->scrollx + game->plataform[u].x, game->plataform[u].y,game->plataform[u].w + (float)10, game->plataform[u].h + (float)15 };
+					SDL_RenderCopy(renderer, game->Plataforma, NULL, &platRect);
 				}
-				if (i == 1) {
-					SDL_Rect heartRect = { 280,28,50,50 };
-					SDL_RenderCopy(renderer, game->vidasi, NULL, &heartRect);
+			}
 
-				}
-				if (i == 2) {
-					SDL_Rect heartRect = { 330,28,50,50 };
-					SDL_RenderCopy(renderer, game->vidasi, NULL, &heartRect);
 
+			for (int l = 30; l < 65; l++) {
+				if (fabs(game->piso2[l].x - game->man.x) < 1350) {
+					SDL_Rect piso1Rect = { game->scrollx + game->piso2[l].x, game->piso2[l].y,game->piso[l].w, game->piso[l].h };
+					SDL_RenderCopy(game->renderer, game->chaomapa2, NULL, &piso1Rect);
 				}
+			}
+
+			for (int p = 0; p < 70; p++) {
+
+
+					SDL_Rect plat2Rect = { game->scrollx + game->plataforma2[p].x, game->plataforma2[p].y,game->plataform[p].w + (float)10, game->plataform[p].h + (float) 15 };
+					SDL_RenderCopy(game->renderer, game->plataformamapa2, NULL, &plat2Rect);
 
 			}
+
+
+			for (int i = 1; i < 8; i++) {
+
+
+				if (game->Star[i].visivel == 1 && fabs(game->Star[i].x - game->man.x) < 1350) {
+					SDL_Rect starRect = { game->scrollx + game->Star[i].x, game->Star[i].y,game->Star[i].w, game->Star[i].h };
+					SDL_RenderCopy(renderer, game->estrela, NULL, &starRect);
+				}
+			}
+			for (int i = 0; i < 16; i++) {
+				if (i < 5) {
+					if (game->inimigo[i].vivo == 1 && fabs(game->inimigo[i].xe - game->man.x) < 1350) {
+						SDL_Rect inimigoRect = { game->scrollx + game->inimigo[i].xe, game->inimigo[i].ye,(float)40,(float)70 };
+						SDL_RenderCopyEx(renderer, game->enemy[game->inimigo[i].mov], NULL, &inimigoRect, 0, NULL, game->inimigo[i].aocontrario == 0);
+					}
+				}
+
+					//mov2
+					if (i >= 5) {
+						if (game->inimigo[i].vivo == 1 && fabs(game->inimigo[i].xe - game->man.x) < 1350) {
+							SDL_Rect inimigoRect = { game->scrollx + game->inimigo[i].xe, game->inimigo[i].ye,(float)40,(float)70 };
+							SDL_RenderCopyEx(renderer, game->enemy[game->inimigo[i].mov2], NULL, &inimigoRect, 0, NULL, game->inimigo[i].aocontrario == 0);
+						}
+					}
+
+
+			}
+
+
+			if (game->cordachao == 0) {
+				SDL_Rect cordatRect = { game->scrollx + game->corda1.x,game->corda1.y, 40,40 };
+				SDL_RenderCopy(renderer, game->corda, NULL, &cordatRect);
+			}
+
+
+
+
+
+
+
+			SDL_Rect hudRect = { 0,0,1280,80 };
+			SDL_RenderCopy(renderer, game->hudi, NULL, &hudRect);
+
+			SDL_Rect placaRect = { game->scrollx + 3938,(float)565,(float)50,(float)50 };
+			SDL_RenderCopy(renderer, game->placacorda, NULL, &placaRect);
+
+            SDL_Rect placagasRect = { game->scrollx + 10050,(float)565,(float)50,(float)50 };
+			SDL_RenderCopy(renderer, game->placagas, NULL, &placagasRect);
+
+
+
+			for (int i = 0; i < 3; i++) {
+				if (game->heart[i].visivel == 1) {
+
+					if (i == 0) {
+						SDL_Rect heartRect = { 220,28,50,50 };
+						SDL_RenderCopy(renderer, game->vidasi, NULL, &heartRect);
+					}
+					if (i == 1) {
+						SDL_Rect heartRect = { 280,28,50,50 };
+						SDL_RenderCopy(renderer, game->vidasi, NULL, &heartRect);
+
+					}
+					if (i == 2) {
+						SDL_Rect heartRect = { 330,28,50,50 };
+						SDL_RenderCopy(renderer, game->vidasi, NULL, &heartRect);
+
+					}
+
+				}
+			}
+
+
+
+
+
+
+
+			SDL_Rect pontosRect = { 1000,15,160,65 };
+			SDL_RenderCopy(renderer, game->scorei, NULL, &pontosRect);
+
+			SDL_Rect vidastRect = { 50,15,160,65 };
+			SDL_RenderCopy(renderer, game->vidasti, NULL, &vidastRect);
+
+
+
+
+			if (game->gasolina == 0) {
+
+				SDL_Rect rects = { game->scrollx + 7015,(float)615,(float)40,(float)40 };
+				SDL_RenderCopy(renderer, game->gas, NULL, &rects);
+
+
+
+			}
+			SDL_Rect hud13Rect = { game->scrollx + 10100,480,250,200 };
+			SDL_RenderCopy(renderer, game->navei, NULL, &hud13Rect);
+
+
+// desenha um retangulo no personagem
+			SDL_Rect rect = { game->scrollx + game->man.x, game->man.y,(float)55,(float)85 };
+			SDL_RenderCopyEx(renderer, game->Boneco[game->man.mov], NULL, &rect, 0, NULL, (game->man.aoContrario == 1));
+
+
+
+			//desenha retangulo tiro
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 		}
 
-		
+
+		if (game->pont == 0) {
 
 
-
-
-
-		SDL_Rect pontosRect = { 1000,15,160,65 };
-		SDL_RenderCopy(renderer, game->scorei, NULL, &pontosRect);
-
-		SDL_Rect vidastRect = { 50,15,160,65 };
-		SDL_RenderCopy(renderer, game->vidasti, NULL, &vidastRect);
-
-		// desenha um retangulo no personagem
-		SDL_Rect rect = { game->scrollx + game->man.x, game->man.y,(float)55,(float)85 };
-		SDL_RenderCopyEx(renderer, game->Boneco[game->man.mov], NULL, &rect, 0, NULL, (game->man.aoContrario == 1));
-
-
-
-		if (game->gasolina == 0) {
-
-			SDL_Rect rects = { game->scrollx + 7015,(float)615,(float)40,(float)40 };
-			SDL_RenderCopy(renderer, game->gas, NULL, &rects);
-
-
-
+			Mix_VolumeMusic(0);
+			Mix_VolumeChunk(game->menusom, 0);
+			Mix_VolumeChunk(game->hit, 0);
 		}
-		SDL_Rect hud13Rect = { game->scrollx + 9450,480,250,200 };
-		SDL_RenderCopy(renderer, game->navei, NULL, &hud13Rect);
+		else
+			Mix_VolumeMusic(5);
+		Mix_VolumeChunk(game->menusom, 4);
+		Mix_VolumeChunk(game->hit, 4);
 
+		// mostra a oq foi desenhado
+		SDL_RenderPresent(renderer);
 
-
-
-
-		//desenha retangulo tiro
-
-		
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	}
-
-
-	if (game->pont == 0) {
-
-
-		Mix_VolumeMusic(0);
-		Mix_VolumeChunk(game->menusom, 0);
-		Mix_VolumeChunk(game->hit, 0);
-	}
-	else
-		Mix_VolumeMusic(5);
-	Mix_VolumeChunk(game->menusom, 4);
-	Mix_VolumeChunk(game->hit, 4);
-
-	// mostra a oq foi desenhado
-	SDL_RenderPresent(renderer);
 }
-
 
 
 
@@ -2408,7 +2764,7 @@ int main(int args, char *argsv[])
 	}
 	// limpa a memoria
 
-
+    SDL_DestroyTexture(gameState.placagas);
 	SDL_DestroyTexture(gameState.gas);
 	SDL_DestroyTexture(gameState.navei);
 	SDL_DestroyTexture(gameState.voador[1]);
@@ -2438,7 +2794,7 @@ int main(int args, char *argsv[])
 	SDL_DestroyTexture(gameState.tirotext);
 
 
-	
+
 
 	//fecha e destroy a janela
 	SDL_DestroyWindow(window);
