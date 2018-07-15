@@ -1,18 +1,21 @@
+
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
-#include "SDL.h"
-#include "SDL_ttf.h"
-#include "SDL_image.h"
-#include "SDL_mixer.h"
+
+#include <SDL.h>
+#include <SDL_mixer.h>
+#include <SDL_ttf.h>
+#include <SDL_image.h>
 
 
 #define _CRT_SECURE_NO_WARNINGS
 #define STATUS_STATE_MENU 0
-#define STATUS_STATE_GAME 1	
+#define STATUS_STATE_GAME 1
 #define STATUS_STATE_GAMEOVER 2
 #define STATUS_STATE_CONFIG 3
 #define STATUS_STATE_CREDITS 4
 #define STATUS_STATE_CONTROLES 5
+#define STATUS_STATE_HISTORIA 7
 #define GAME_STATUS_FIM 6
 #define MAX_TIROS 10
 
@@ -93,7 +96,7 @@ typedef struct {
 
 
 
-	
+
 	Nave nave2;
 	Passaro voador1[10];
 
@@ -116,13 +119,15 @@ typedef struct {
 	Piso piso2[100];
 	Piso plataforma2[100];
 	char pontuacao[100];
-	
+	char pontuacao2[100];
+
 	SDL_Texture *navei;
 	SDL_Texture *tirotext;
 	SDL_Texture *gas;
 	int gasolina;
 	int n, n1, n2, n3, aux;
-
+	int tempohis;
+    SDL_Texture *historia;
 	//IMAGENS INGAME mapa 1
 	SDL_Texture *sairgoi3;
 	SDL_Texture *voltarfim;
@@ -153,7 +158,7 @@ typedef struct {
 	SDL_Texture *fundocontrole;
 	SDL_Texture *estrela;
 	SDL_Texture *scorei;
-	
+
 	SDL_Texture *voador[2];
 	// ingame mapa 2
 	SDL_Texture *chaomapa2;
@@ -174,7 +179,7 @@ typedef struct {
 	SDL_Texture *rankingi;
 	SDL_Texture *rankingi1;
 	int fase2;
-	
+
 
 	int loadtext;
 
@@ -191,7 +196,7 @@ typedef struct {
 	int cordachao;
 	int sobvoltarfim;
 	int sobsairfim;
-
+    SDL_Texture *placagas;
 	// MENU CREDITOS
 	SDL_Texture *creditosi;
 	SDL_Texture *creditosi1;
@@ -234,9 +239,9 @@ typedef struct {
 	SDL_Texture *sairgoi1;
 	int sobvoltargo;
 	int sobsairgo;
-	
+
 	 char text[10];
-	
+
 	Sint32 cursor;
 	 Sint32 selection_len;
 
@@ -257,7 +262,7 @@ typedef struct {
 
 	int sobvoltar;
 	// som
-	
+
 	Mix_Chunk *menusom;
 
 	Mix_Chunk *hit;
