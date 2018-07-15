@@ -2,23 +2,27 @@
 #include <stdio.h>
 #include "main.h"
 #include <stdio.h>
-#include "SDL_ttf.h"
-#include "SDL.h"
-#include "SDL_image.h"
-#include "SDL_mixer.h"
-
+#include <SDL.h>
+#include <SDL_mixer.h>
+#include <SDL_ttf.h>
+#include <SDL_image.h>
+#include <stdlib.h>
 
 
 
 
 void init_status_menu(GameState *game) {
 	char pontuacao[100] = "";
+
+
 	SDL_Surface *menu = NULL;
+
+
 	menu = IMG_Load("logo.png");
 	if (menu == NULL) {
 		printf("Nao foi possivel achar logo.png");
 		SDL_Quit();
-		exit(1);
+		exit(781);
 	}
 	game->logo = SDL_CreateTextureFromSurface(game->renderer, menu);
 
@@ -40,9 +44,9 @@ void init_status_menu(GameState *game) {
 	game->novo = SDL_CreateTextureFromSurface(game->renderer, novoi);
 	SDL_FreeSurface(novoi);
 
-	SDL_Surface *configi = TTF_RenderText_Solid(game->fonte3, "Config", black);
+	SDL_Surface *configi = TTF_RenderText_Solid(game->fonte3, "Controles", black);
 	game->configw = configi->w;
-	game->configh = configi->h;
+	game->configh = configi->h ;
 	game->config = SDL_CreateTextureFromSurface(game->renderer, configi);
 	SDL_FreeSurface(configi);
 
@@ -53,7 +57,7 @@ void init_status_menu(GameState *game) {
 	game->novo1 = SDL_CreateTextureFromSurface(game->renderer, novo1);
 	SDL_FreeSurface(novo1);
 
-	SDL_Surface *config1 = TTF_RenderText_Solid(game->fonte3, "Config", red);
+	SDL_Surface *config1 = TTF_RenderText_Solid(game->fonte3, "Controles", red);
 	game->configw = config1->w;
 	game->configh = config1->h;
 	game->config1 = SDL_CreateTextureFromSurface(game->renderer, config1);
@@ -75,7 +79,7 @@ void init_status_menu(GameState *game) {
 	game->sairh = sair1->h;
 	game->sair1 = SDL_CreateTextureFromSurface(game->renderer, sair1);
 	SDL_FreeSurface(sair1);
-	
+
 		SDL_Surface *sairi = TTF_RenderText_Solid(game->fonte3, "Sair", black);
 		game->sairw = sairi->w;
 		game->sairh = sairi->h;
@@ -105,7 +109,7 @@ void init_status_menu(GameState *game) {
 
 			SDL_FreeSurface(menufundo);
 
-		
+
 
 }
 void draw_status_menu(GameState *game) {
@@ -180,14 +184,14 @@ void draw_status_menu(GameState *game) {
 
 
 	}
-	
+
 
 }
 void shutdown_status_menu(GameState *game) {
 
 			SDL_DestroyTexture(game->logomenu);
 			game->logomenu = NULL;
-			
+
 			SDL_DestroyTexture(game->label);
 			game->label = NULL;
 			SDL_DestroyTexture(game->novo);
@@ -198,7 +202,7 @@ void shutdown_status_menu(GameState *game) {
 			game->sair = NULL;
 			SDL_DestroyTexture(game->logo);
 			game->logo = NULL;
-			
+
 			SDL_DestroyTexture(game->novo1);
 			game->novo1 = NULL;
 			SDL_DestroyTexture(game->config1);
@@ -209,7 +213,7 @@ void shutdown_status_menu(GameState *game) {
 			game->menucred = NULL;
 			SDL_DestroyTexture(game->cred);
 			game->cred = NULL;
-	
+
 	}
 
 
@@ -225,7 +229,7 @@ void init_status_cred(GameState *game) {
 	SDL_Color black1 = { 0,0,0,0 };
 
 
-	//CREDITOS 
+	//CREDITOS
 	SDL_Surface *Creditos = TTF_RenderText_Solid(game->fonte4, "Creditos", red1);
 	game->creditosw = Creditos->w;
 	game->creditosh = Creditos->h;
@@ -313,7 +317,7 @@ void draw_status_cred(GameState *game) {
 	SDL_Rect vitRect = { 500,410,game->vitorw,game->vitorh};
 	SDL_RenderCopy(renderer, game->vitori, NULL, &vitRect);
 
-	
+
 	//FUNDO
 	SDL_Surface *menufundo = NULL;
 	menufundo = IMG_Load("fundomenu.png");
@@ -327,7 +331,7 @@ void draw_status_cred(GameState *game) {
 	SDL_FreeSurface(menufundo);
 
 
-	//ESCREVENDO OS TEXTOS EM VERMELHO 
+	//ESCREVENDO OS TEXTOS EM VERMELHO
 	if (game->sobvoltar ==1) {
 		Mix_PlayChannel(-1, game->menusom, 0);
 
@@ -374,10 +378,10 @@ void shutdown_status_cred(GameState *game) {
 
 void init_status_over(GameState *game) {
 
-	
 
 
-	
+	game->score = 0;
+
 
 	SDL_Color white = { 255,255,255,255 };
 	SDL_Color red = { 255,0,0,255 };
@@ -389,14 +393,14 @@ void init_status_over(GameState *game) {
 	SDL_Surface *sairr = TTF_RenderText_Solid(game->fonte3, "Sair", white);
 	game->sairgoi = SDL_CreateTextureFromSurface(game->renderer, sairr);
 
-	SDL_Surface *pontof1 = TTF_RenderText_Solid(game->fonte3, game->pontuacao, white);
+	SDL_Surface *pontof1 = TTF_RenderText_Solid(game->fonte3, game->pontuacao2, white);
 	game->pontof1i = SDL_CreateTextureFromSurface(game->renderer, pontof1);
 
 
 
 
 	SDL_Surface *voltargo1 = TTF_RenderText_Solid(game->fonte3, "Voltar", red);
-	
+
 	game->voltargoi1 = SDL_CreateTextureFromSurface(game->renderer, voltargo1);
 	SDL_FreeSurface(voltargo1);
 
@@ -420,8 +424,8 @@ void init_status_over(GameState *game) {
 	game->fundogo = SDL_CreateTextureFromSurface(game->renderer, fundo1);
 	SDL_FreeSurface(fundo1);
 
-	
-	
+
+
 
 
 }
@@ -444,7 +448,7 @@ void draw_status_over(GameState *game) {
 	SDL_Rect ponto1Rect = { 500,250,300,200};
 	SDL_RenderCopy(game->renderer, game->pontof1i, NULL, &ponto1Rect);
 
-	
+
 
 	if (game->sobvoltargo == 1   || game->sobsairgo==1) {
 		Mix_PlayChannel(-1, game->menusom, 0);
@@ -462,13 +466,13 @@ void draw_status_over(GameState *game) {
 		SDL_RenderCopy(renderer, game->sairgoi1, NULL, &sairgo1Rect);
 	}
 
-	
+
 
 
 }
 void shutdown_status_over(GameState *game) {
-	
-	
+
+
 
 	SDL_DestroyTexture(game->fundogo);
 	game->fundogo = NULL;
@@ -487,17 +491,17 @@ void shutdown_status_over(GameState *game) {
 
 	SDL_DestroyTexture(game->pontof1i);
 	game->pontof1i == NULL;
-	
+
 
 	SDL_DestroyRenderer(game->renderer);
-	
-	
+
+
 
 }
 
 
 void init_status_fim(GameState *game) {
-		
+
 	SDL_Color white = { 255,255,255,255 };
 	SDL_Color red = { 255,0,0,255 };
 	SDL_Color black = { 0,0,0,0 };
@@ -589,7 +593,7 @@ void shutdown_status_fim(GameState *game){
 	SDL_DestroyTexture(game->fundofim);
 	game->fundofim = NULL;
 
-	
+
 
 	SDL_DestroyTexture(game->voltargoi2);
 	game->voltargoi2 = NULL;
@@ -615,7 +619,7 @@ void shutdown_status_fim(GameState *game){
 
 void init_status_config(GameState *game) {
 	SDL_Surface *fundofim7 = NULL;
-	fundofim7 = IMG_Load("config.png");
+	fundofim7 = IMG_Load("controles.png");
 	if (fundofim7 == NULL) {
 		printf("nao foi possivel achar gameover.png");
 		SDL_Quit();
@@ -642,11 +646,7 @@ void init_status_config(GameState *game) {
 	SDL_Surface *sairr91 = TTF_RenderText_Solid(game->fonte3, "Sair", red);
 	game->sairconfig1 = SDL_CreateTextureFromSurface(game->renderer, sairr91);
 
-	SDL_Surface *tick9 = TTF_RenderText_Solid(game->fonte3, "X", red);
-	game->tick = SDL_CreateTextureFromSurface(game->renderer, sairr9);
 
-	SDL_Surface *audio = TTF_RenderText_Solid(game->fonte3, "Audio", white);
-	game->audioi = SDL_CreateTextureFromSurface(game->renderer, audio);
 
 
 }
@@ -667,24 +667,17 @@ void draw_status_config(GameState *game) {
 	SDL_Rect voltaragoiRect1 = { 120,560,100,100 };
 	SDL_RenderCopy(game->renderer, game->voltarconfig, NULL, &voltaragoiRect1);
 
-	SDL_Rect voltaragoiRect11 = { 380,330,150,125 };
-	SDL_RenderCopy(game->renderer, game->audioi, NULL, &voltaragoiRect11);
 
 
 
 
+	if (game->sobsairm == 1  || game->sobvoltarm==1) {
 
-	if (game->sobsairm == 1  || game->sobvoltarm==1 ) {
 		Mix_PlayChannel(-1, game->menusom, 0);
 
 	}
 
 
-	if (game->pont >= 1)
-	{
-		SDL_Rect pontoa1Rect1 = { 771,354,60,60 };
-		SDL_RenderCopy(game->renderer, game->tick, NULL, &pontoa1Rect1);
-	}
 
 
 	if (game->sobvoltarm >= 1) {
@@ -727,7 +720,7 @@ void shutdown_status_config(GameState *game) {
 	SDL_DestroyTexture(game->audioi);
 	game->audioi == NULL;
 
-	
+
 
 
 }
